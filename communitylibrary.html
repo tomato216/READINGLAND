@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>READINGLAND - Reading Library</title>
+  <title>READINGLAND - Article Library</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,8 +28,6 @@
     /* Pill Filter Styles */
     .filter-pill {
       transition: all 0.2s ease;
-      cursor: pointer;
-      user-select: none;
     }
     .filter-pill.active {
       background-color: #FF7B9C;
@@ -37,229 +35,99 @@
       box-shadow: 0px 4px 0px #E05275;
     }
 
-    /* Article Card 3D Effect */
+    /* Video-like Card Animation */
     .article-card {
-      transition: all 0.25s ease;
-      box-shadow: 0px 6px 0px #CBD5E1;
+      transition: all 0.2s ease;
     }
     .article-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0px 10px 0px #CBD5E1;
-    }
-
-    /* Word highlighting on click in reader mode */
-    .interactive-word {
-      cursor: pointer;
-      padding: 1px 3px;
-      border-radius: 4px;
-      transition: background 0.15s;
-    }
-    .interactive-word:hover {
-      background-color: #FFD166;
-    }
-    .interactive-word.selected {
-      background-color: #FF7B9C;
-      color: white;
-      font-weight: bold;
+      box-shadow: 0 12px 24px -10px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col justify-between text-gray-700">
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-8 text-gray-700">
 
   <!-- Header / Navbar -->
-  <header class="w-full max-w-7xl mx-auto p-4 sm:px-8 flex items-center justify-between border-b-2 border-pink-100">
+  <header class="w-full max-w-7xl flex items-center justify-between py-4 border-b-2 border-pink-100 mb-6">
     <a href="dashboard.html" class="flex items-center gap-2 no-underline">
       <span class="text-3xl">📚</span>
       <h1 class="font-bubble text-3xl font-black text-pink-400 tracking-wide">READINGLAND</h1>
     </a>
     
     <div id="userHeaderArea" class="flex items-center gap-3">
-      <span class="text-xs font-bold text-gray-400">Loading...</span>
+      <span class="text-xs font-bold text-gray-400">Loading profile...</span>
     </div>
   </header>
 
-  <!-- GIAO DIỆN chính: THƯ VIỆN BÀI ĐỌC (LIBRARY VIEW) -->
-  <main id="libraryView" class="w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 flex-1">
+  <!-- Main Content Area -->
+  <main class="w-full max-w-7xl my-auto space-y-6">
     
-    <!-- Top Navigation & Tabs (Public vs My Library) -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-      <div class="flex bg-white p-1.5 rounded-2xl border-2 border-pink-100 shadow-sm w-full sm:w-auto">
-        <button id="tabPublic" onclick="switchLibraryTab('public')" class="flex-1 sm:flex-initial px-6 py-2 rounded-xl font-extrabold text-sm transition-all bg-pink-400 text-white shadow-sm">
-          🌐 Public Library
+    <!-- Top Bar: Navigation Tabs & Search Bar -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/80 p-4 rounded-3xl border-2 border-pink-100 shadow-sm">
+      
+      <!-- Library Switcher Tabs (Public vs My Articles) -->
+      <div class="flex gap-2 w-full md:w-auto">
+        <button id="tabPublic" onclick="switchLibraryTab('public')" class="flex-1 md:flex-none px-5 py-2.5 rounded-2xl font-black text-xs transition-all bg-pink-500 text-white shadow-md">
+          🌐 Community Library
         </button>
-        <button id="tabMyLibrary" onclick="switchLibraryTab('my')" class="flex-1 sm:flex-initial px-6 py-2 rounded-xl font-extrabold text-sm transition-all text-gray-500 hover:text-pink-500">
-          🔒 My Library
+        <button id="tabMyArticles" onclick="switchLibraryTab('mine')" class="flex-1 md:flex-none px-5 py-2.5 rounded-2xl font-black text-xs transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+          🔒 My Articles
         </button>
       </div>
 
-      <!-- Search Bar -->
-      <div class="relative w-full sm:w-96">
-        <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search articles, topics, sources..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-pink-100 focus:border-pink-300 focus:outline-none font-bold text-sm bg-white shadow-sm">
-        <span class="absolute left-3.5 top-3 text-gray-400">🔍</span>
+      <!-- Search Input -->
+      <div class="w-full md:w-96 relative">
+        <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by title, topic, or source..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-pink-100 focus:border-pink-400 focus:outline-none font-bold text-xs bg-pink-50/30">
+        <span class="absolute left-3.5 top-3 text-sm text-pink-300">🔍</span>
       </div>
     </div>
 
-    <!-- Filter Pills Row -->
-    <div class="space-y-3 mb-8 bg-white/60 p-4 rounded-2xl border border-pink-100 backdrop-blur-sm">
+    <!-- Filters Bar (Pill buttons) -->
+    <div class="space-y-3 bg-white/60 p-4 rounded-3xl border border-pink-50">
       
-      <!-- Topics Filter -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs font-extrabold">
-        <span class="text-gray-400 uppercase tracking-wider shrink-0 text-[10px]">Topic:</span>
-        <button onclick="setFilter('topic', 'All')" class="filter-pill active topic-pill px-3 py-1 rounded-full bg-gray-100 text-gray-600">All Topics</button>
-        <button onclick="setFilter('topic', 'Technology')" class="filter-pill topic-pill px-3 py-1 rounded-full bg-gray-100 text-gray-600">Technology</button>
-        <button onclick="setFilter('topic', 'Science')" class="filter-pill topic-pill px-3 py-1 rounded-full bg-gray-100 text-gray-600">Science</button>
-        <button onclick="setFilter('topic', 'Culture')" class="filter-pill topic-pill px-3 py-1 rounded-full bg-gray-100 text-gray-600">Culture</button>
-        <button onclick="setFilter('topic', 'Story')" class="filter-pill topic-pill px-3 py-1 rounded-full bg-gray-100 text-gray-600">Story</button>
+      <!-- Topic Filter -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <span class="font-black text-gray-400 min-w-max uppercase tracking-wider text-[10px]">Topic:</span>
+        <button onclick="setFilter('topic', 'all')" class="filter-pill topic-pill active px-3.5 py-1.5 rounded-full font-bold bg-white text-gray-600 border border-gray-200 border-none cursor-pointer">All</button>
+        <button onclick="setFilter('topic', 'Technology')" class="filter-pill topic-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-gray-600 border border-gray-200 border-none cursor-pointer">Technology</button>
+        <button onclick="setFilter('topic', 'Science')" class="filter-pill topic-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-gray-600 border border-gray-200 border-none cursor-pointer">Science</button>
+        <button onclick="setFilter('topic', 'Culture')" class="filter-pill topic-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-gray-600 border border-gray-200 border-none cursor-pointer">Culture</button>
+        <button onclick="setFilter('topic', 'Story')" class="filter-pill topic-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-gray-600 border border-gray-200 border-none cursor-pointer">Stories</button>
       </div>
 
       <!-- CEFR Level Filter -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs font-extrabold">
-        <span class="text-gray-400 uppercase tracking-wider shrink-0 text-[10px]">CEFR Level:</span>
-        <button onclick="setFilter('level', 'All')" class="filter-pill active level-pill px-3 py-1 rounded-full bg-gray-100 text-gray-600">All Levels</button>
-        <button onclick="setFilter('level', 'A1-A2')" class="filter-pill level-pill px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">A1-A2 (Beginner)</button>
-        <button onclick="setFilter('level', 'B1-B2')" class="filter-pill level-pill px-3 py-1 rounded-full bg-amber-100 text-amber-700">B1-B2 (Intermediate)</button>
-        <button onclick="setFilter('level', 'C1-C2')" class="filter-pill level-pill px-3 py-1 rounded-full bg-rose-100 text-rose-700">C1-C2 (Advanced)</button>
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <span class="font-black text-gray-400 min-w-max uppercase tracking-wider text-[10px]">CEFR Level:</span>
+        <button onclick="setFilter('level', 'all')" class="filter-pill level-pill active px-3.5 py-1.5 rounded-full font-bold bg-white text-gray-600 border border-gray-200 border-none cursor-pointer">All Levels</button>
+        <button onclick="setFilter('level', 'A1-A2')" class="filter-pill level-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-emerald-600 border border-emerald-200 border-none cursor-pointer">A1 - A2 (Beginner)</button>
+        <button onclick="setFilter('level', 'B1-B2')" class="filter-pill level-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-amber-600 border border-amber-200 border-none cursor-pointer">B1 - B2 (Intermediate)</button>
+        <button onclick="setFilter('level', 'C1-C2')" class="filter-pill level-pill px-3.5 py-1.5 rounded-full font-bold bg-white text-rose-600 border border-rose-200 border-none cursor-pointer">C1 - C2 (Advanced)</button>
       </div>
+
     </div>
 
-    <!-- YouTube-style Articles Grid -->
-    <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Cards will be populated dynamically via JavaScript -->
+    <!-- YouTube-Style Grid Section -->
+    <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2">
+      <!-- Article Cards will be dynamically injected here -->
     </div>
 
-  </main>
-
-  <!-- GIAO DIỆN PHỤ: XEM VÀ ĐỌC BÀI TƯƠNG TÁC (READER MODE MODAL / VIEW) -->
-  <main id="readerView" class="w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 hidden flex-1">
-    
-    <!-- Top Back Button & Controls -->
-    <div class="flex items-center justify-between mb-6 pb-4 border-b-2 border-pink-100">
-      <button onclick="closeReaderView()" class="flex items-center gap-2 text-sm font-extrabold text-pink-500 hover:text-pink-600 bg-pink-50 px-4 py-2 rounded-xl transition-all border border-pink-200 cursor-pointer">
-        <span>⬅️</span> Back to Library
-      </button>
-
-      <!-- Bilingual Toggle Switch -->
-      <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border-2 border-pink-100 shadow-sm">
-        <span class="text-xs font-black text-gray-600">Bilingual Mode (Song Ngữ)</span>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" id="bilingualToggle" onchange="toggleBilingual()" class="sr-only peer">
-          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-400"></div>
-        </label>
-      </div>
-    </div>
-
-    <!-- Reader Container: Article Content (Left) + Smart Vocab Panel (Right) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      
-      <!-- Cột Trái: Nội Dung Bài Đọc -->
-      <div class="lg:col-span-2 bg-white/90 p-6 sm:p-8 rounded-3xl border-4 border-pink-100 shadow-sm space-y-6">
-        <div>
-          <span id="readArticleBadge" class="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-extrabold uppercase">CEFR B2</span>
-          <h2 id="readArticleTitle" class="font-bubble text-3xl font-black text-gray-800 mt-2">Title Placeholder</h2>
-          <div id="readArticleMeta" class="text-xs font-bold text-gray-400 mt-1 flex items-center gap-4">
-            <span>By: <strong id="readArticleAuthor" class="text-gray-600">User</strong></span>
-            <span>Source: <strong id="readArticleSource" class="text-gray-600">Web</strong></span>
-          </div>
-        </div>
-
-        <!-- Inner Content (Words clickable) -->
-        <div id="readArticleBody" class="text-base sm:text-lg text-gray-700 leading-relaxed space-y-4 pt-4 border-t border-gray-100">
-          <!-- Text rendered dynamically with interactive word spans -->
-        </div>
-
-        <!-- Section Tiếng Việt (Hiển thị khi bật Song ngữ) -->
-        <div id="bilingualSection" class="hidden bg-emerald-50/60 p-5 rounded-2xl border-2 border-emerald-100 space-y-2 mt-6">
-          <h4 class="text-xs font-black text-emerald-600 uppercase tracking-wider">🇻🇳 Bản Dịch Tiếng Việt:</h4>
-          <p id="readArticleVietnamese" class="text-sm sm:text-base font-semibold text-emerald-950 leading-relaxed">
-            Dịch toàn bộ bài đọc sẽ hiển thị ở đây khi bạn bật chế độ Song Ngữ.
-          </p>
-        </div>
-      </div>
-
-      <!-- Cột Phải: Tra Từ Thông Minh (Smart Dictionary & Pocket) -->
-      <div class="lg:col-span-1">
-        <div class="sticky top-6 bg-white p-6 rounded-3xl border-4 border-purple-100 shadow-lg space-y-5">
-          
-          <div class="flex items-center justify-between border-b border-purple-100 pb-3">
-            <h3 class="font-bubble text-xl font-black text-purple-600 flex items-center gap-2">
-              <span>🔍</span> Smart Dictionary
-            </h3>
-            <span class="text-[10px] font-extrabold bg-purple-100 text-purple-600 px-2 py-0.5 rounded-md">Click any word</span>
-          </div>
-
-          <!-- Trạng thái mặc định khi chưa bấm từ nào -->
-          <div id="dictEmptyState" class="text-center py-8 text-gray-400 space-y-2">
-            <span class="text-4xl block animate-bounce">👆</span>
-            <p class="text-xs font-bold">Click on any word in the article to view instant details, definition & translations!</p>
-          </div>
-
-          <!-- Thông tin Tra từ Chi tiết -->
-          <div id="dictDetailState" class="hidden space-y-4">
-            
-            <div class="flex items-baseline justify-between">
-              <div>
-                <h4 id="dictWord" class="font-bubble text-3xl font-black text-gray-800">Example</h4>
-                <p id="dictIpa" class="text-xs font-bold text-pink-500">/ɪɡˈzæm.pəl/</p>
-              </div>
-              
-              <!-- Nút Viên Thuốc: Lưu Từ Vựng -->
-              <button id="saveVocabPill" onclick="saveToVocabNotebook()" class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-full text-xs font-black transition-all shadow-md flex items-center gap-1.5 border-none cursor-pointer">
-                <span>📌</span> Save Word
-              </button>
-            </div>
-
-            <div class="space-y-3 text-xs">
-              <!-- Nghĩa Tiếng Việt -->
-              <div class="bg-pink-50 p-3 rounded-2xl border border-pink-100">
-                <span class="font-extrabold text-pink-600 block mb-0.5">🇻🇳 Vietnamese Meaning:</span>
-                <p id="dictVietnamese" class="font-black text-sm text-gray-800">Ví dụ, hình mẫu</p>
-              </div>
-
-              <!-- Nghĩa Tiếng Anh -->
-              <div>
-                <span class="font-extrabold text-gray-400 block uppercase text-[10px]">English Definition:</span>
-                <p id="dictEnglishDef" class="font-bold text-gray-700 leading-snug">A thing characteristic of its kind or illustrating a general rule.</p>
-              </div>
-
-              <!-- Từ đồng nghĩa / Trái nghĩa -->
-              <div class="grid grid-cols-2 gap-2 pt-1">
-                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                  <span class="font-extrabold text-emerald-600 block text-[10px]">Synonyms:</span>
-                  <p id="dictSynonyms" class="font-bold text-gray-600">sample, instance</p>
-                </div>
-                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                  <span class="font-extrabold text-rose-500 block text-[10px]">Antonyms:</span>
-                  <p id="dictAntonyms" class="font-bold text-gray-600">N/A</p>
-                </div>
-              </div>
-
-              <!-- Ví dụ -->
-              <div class="border-t border-gray-100 pt-2 space-y-1">
-                <span class="font-extrabold text-gray-400 block uppercase text-[10px]">Example Sentence:</span>
-                <p id="dictEnExample" class="font-bold text-gray-800 italic">"This is a clear example of good practice."</p>
-                <p id="dictViExample" class="font-semibold text-emerald-700 text-[11px]">"Đây là một ví dụ rõ ràng về thực hành tốt."</p>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-      </div>
-
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16 space-y-3">
+      <div class="text-6xl">📭</div>
+      <h3 class="font-bubble text-2xl font-bold text-gray-500">No Articles Found</h3>
+      <p class="text-xs text-gray-400 font-semibold">Try adjusting your filters or create a new reading article!</p>
     </div>
 
   </main>
 
   <!-- Footer -->
-  <footer class="w-full max-w-7xl mx-auto text-center py-4 border-t-2 border-pink-100 mt-6 text-xs text-gray-400 font-bold">
+  <footer class="w-full max-w-7xl text-center py-4 border-t-2 border-pink-100 mt-8 text-xs text-gray-400 font-bold">
     READINGLAND © 2026 - Designed for English Learners Worldwide 🌍
   </footer>
 
-  <!-- SCRIPT XỬ LÝ DỮ LIỆU & GIAO DIỆN -->
+  <!-- SCRIPT FIREBASE & LOGIC -->
   <script>
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
       authDomain: "readingland-bccc1.firebaseapp.com",
@@ -275,33 +143,31 @@
     const db = firebase.firestore();
 
     let currentUser = null;
-    let currentTab = 'public'; // 'public' | 'my'
-    let activeTopic = 'All';
-    let activeLevel = 'All';
-    let loadedArticles = [];
-    let selectedArticle = null;
-    let selectedWordData = null;
+    let currentTab = 'public'; // 'public' or 'mine'
+    let selectedTopic = 'all';
+    let selectedLevel = 'all';
+    let allArticles = [];
 
-    // Sample Abstract Colorful Gradients (Mô phỏng hình ảnh nhiều màu sắc đan xen)
-    const colorfulGradients = [
-      "linear-gradient(135deg, #FF9A9E 0%, #FECFEF 99%, #FECFEF 100%)",
-      "linear-gradient(120deg, #84FAB0 0%, #8FD3F4 100%)",
-      "linear-gradient(120deg, #E0C3FC 0%, #8EC5FC 100%)",
-      "linear-gradient(120deg, #FCCB90 0%, #D57EEB 100%)",
-      "linear-gradient(to top, #A18CD1 0%, #FBC2EB 100%)",
-      "linear-gradient(to right, #4FACFE 0%, #00F2FE 100%)"
+    // Array of abstract gradient backgrounds for placeholder thumbnails
+    const gradients = [
+      'linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)',
+      'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+      'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)',
+      'linear-gradient(135deg, #fabc3c 0%, #F7C59F 100%)',
+      'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
+      'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)'
     ];
 
-    // Auth State Observer
     auth.onAuthStateChanged((user) => {
-      currentUser = user;
       if (user) {
+        currentUser = user;
         let displayName = user.displayName || user.email?.split('@')[0] || "Learner";
         document.getElementById('userHeaderArea').innerHTML = `
-          <a href="profile.html" class="flex items-center gap-1.5 text-xs font-black text-pink-600 bg-pink-100/80 px-3.5 py-1.5 rounded-full hover:bg-pink-200 transition-all no-underline border border-pink-200">
+          <a href="profile.html" class="flex items-center gap-1.5 text-xs font-black text-pink-600 bg-pink-100 px-3.5 py-1.5 rounded-full hover:bg-pink-200 transition-all no-underline border border-pink-200">
             <span>👤</span>
             <span>${displayName}</span>
           </a>
+          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">Logout</button>
         `;
         fetchArticles();
       } else {
@@ -309,263 +175,129 @@
       }
     });
 
-    // Fetch Articles from Firestore
     async function fetchArticles() {
-      const grid = document.getElementById('articlesGrid');
-      grid.innerHTML = `<div class="col-span-full text-center py-12 font-bold text-gray-400">Loading articles... 🚀</div>`;
-
       try {
-        let query = db.collection("articles");
-        
+        let query;
         if (currentTab === 'public') {
-          query = query.where("isPublic", "==", true);
+          query = db.collection('articles').where('isPublic', '==', true);
         } else {
-          query = query.where("userId", "==", currentUser.uid);
+          query = db.collection('articles').where('authorId', '==', currentUser.uid);
         }
 
         const snapshot = await query.get();
-        loadedArticles = [];
-        snapshot.forEach(doc => {
-          loadedArticles.push({ id: doc.id, ...doc.data() });
-        });
-
-        // If database is empty, add mock data for demonstration
-        if (loadedArticles.length === 0) {
-          loadedArticles = getMockArticles();
-        }
-
+        allArticles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         applyFilters();
       } catch (err) {
-        console.warn("Firestore fetch notice:", err);
-        // Fallback to mock data if collection doesn't exist yet
-        loadedArticles = getMockArticles();
-        applyFilters();
+        console.error("Error loading articles:", err);
       }
     }
 
-    // Switch between Public and My Library
     function switchLibraryTab(tab) {
       currentTab = tab;
       const tabPublic = document.getElementById('tabPublic');
-      const tabMy = document.getElementById('tabMyLibrary');
+      const tabMyArticles = document.getElementById('tabMyArticles');
 
       if (tab === 'public') {
-        tabPublic.className = "flex-1 sm:flex-initial px-6 py-2 rounded-xl font-extrabold text-sm transition-all bg-pink-400 text-white shadow-sm";
-        tabMy.className = "flex-1 sm:flex-initial px-6 py-2 rounded-xl font-extrabold text-sm transition-all text-gray-500 hover:text-pink-500";
+        tabPublic.className = "flex-1 md:flex-none px-5 py-2.5 rounded-2xl font-black text-xs transition-all bg-pink-500 text-white shadow-md cursor-pointer";
+        tabMyArticles.className = "flex-1 md:flex-none px-5 py-2.5 rounded-2xl font-black text-xs transition-all bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer";
       } else {
-        tabMy.className = "flex-1 sm:flex-initial px-6 py-2 rounded-xl font-extrabold text-sm transition-all bg-pink-400 text-white shadow-sm";
-        tabPublic.className = "flex-1 sm:flex-initial px-6 py-2 rounded-xl font-extrabold text-sm transition-all text-gray-500 hover:text-pink-500";
+        tabMyArticles.className = "flex-1 md:flex-none px-5 py-2.5 rounded-2xl font-black text-xs transition-all bg-pink-500 text-white shadow-md cursor-pointer";
+        tabPublic.className = "flex-1 md:flex-none px-5 py-2.5 rounded-2xl font-black text-xs transition-all bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer";
       }
       fetchArticles();
     }
 
-    // Filter Logic
     function setFilter(type, value) {
       if (type === 'topic') {
-        activeTopic = value;
-        document.querySelectorAll('.topic-pill').forEach(el => {
-          el.classList.toggle('active', el.innerText.includes(value));
-        });
+        selectedTopic = value;
+        document.querySelectorAll('.topic-pill').forEach(btn => btn.classList.remove('active'));
       } else if (type === 'level') {
-        activeLevel = value;
-        document.querySelectorAll('.level-pill').forEach(el => {
-          el.classList.toggle('active', el.innerText.includes(value));
-        });
+        selectedLevel = value;
+        document.querySelectorAll('.level-pill').forEach(btn => btn.classList.remove('active'));
       }
+      event.target.classList.add('active');
       applyFilters();
     }
 
     function applyFilters() {
-      const searchKeyword = document.getElementById('searchInput').value.toLowerCase().trim();
-      const grid = document.getElementById('articlesGrid');
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
 
-      const filtered = loadedArticles.filter(item => {
-        const matchesSearch = item.title.toLowerCase().includes(searchKeyword) || 
-                              item.topic.toLowerCase().includes(searchKeyword) ||
-                              item.author.toLowerCase().includes(searchKeyword);
-        const matchesTopic = activeTopic === 'All' || item.topic === activeTopic;
-        const matchesLevel = activeLevel === 'All' || item.level === activeLevel;
+      const filtered = allArticles.filter(item => {
+        const matchesSearch = (item.title || '').toLowerCase().includes(searchTerm) ||
+                              (item.topic || '').toLowerCase().includes(searchTerm) ||
+                              (item.source || '').toLowerCase().includes(searchTerm);
+        
+        const matchesTopic = selectedTopic === 'all' || item.topic === selectedTopic;
+        const matchesLevel = selectedLevel === 'all' || item.cefrLevel === selectedLevel;
 
         return matchesSearch && matchesTopic && matchesLevel;
       });
 
-      if (filtered.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full text-center py-12 space-y-2">
-            <span class="text-4xl">🔍</span>
-            <p class="font-bold text-gray-500">No articles found matching your criteria.</p>
-          </div>
-        `;
+      renderArticles(filtered);
+    }
+
+    function renderArticles(list) {
+      const grid = document.getElementById('articlesGrid');
+      const emptyState = document.getElementById('emptyState');
+      grid.innerHTML = '';
+
+      if (list.length === 0) {
+        emptyState.classList.remove('hidden');
         return;
       }
 
-      grid.innerHTML = filtered.map((art, idx) => {
-        const bgGrad = colorfulGradients[idx % colorfulGradients.length];
-        return `
-          <div onclick="openReaderView('${art.id}')" class="article-card bg-white rounded-3xl overflow-hidden border-2 border-gray-100 cursor-pointer flex flex-col justify-between">
-            <div>
-              <!-- Hình khối màu sắc đan xen mô phỏng Thumbnail -->
-              <div class="h-36 w-full p-4 flex flex-col justify-between" style="background: ${bgGrad};">
-                <div class="flex justify-between items-center">
-                  <span class="px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-full text-[10px] font-black text-gray-700 uppercase">${art.topic}</span>
-                  <span class="px-2.5 py-1 bg-gray-900/80 text-white rounded-full text-[10px] font-black">${art.level}</span>
-                </div>
-                <div class="text-right">
-                  <span class="text-xs font-black text-white/90 drop-shadow">Avg: ${art.avgCEFR || 'B1'}</span>
-                </div>
-              </div>
+      emptyState.classList.add('hidden');
 
-              <!-- Title & Info -->
-              <div class="p-4 space-y-2">
-                <h3 class="font-bubble text-lg font-black text-gray-800 line-clamp-2 leading-snug">${art.title}</h3>
-                <div class="text-xs font-bold text-gray-400 space-y-0.5">
-                  <p class="text-gray-600 font-extrabold truncate">Source: ${art.source || 'Community'}</p>
-                  <p class="text-[11px]">Uploaded by: <strong class="text-pink-500">${art.author}</strong></p>
-                </div>
+      list.forEach((art, idx) => {
+        const gradientBg = gradients[idx % gradients.length];
+        const card = document.createElement('div');
+        card.className = "article-card bg-white rounded-3xl overflow-hidden border-2 border-pink-100/80 cursor-pointer flex flex-col justify-between";
+        card.onclick = () => {
+          window.location.href = `article-detail.html?id=${art.id}`;
+        };
+
+        card.innerHTML = `
+          <div>
+            <!-- Abstract Placeholder Thumbnail -->
+            <div class="h-40 w-full p-4 flex flex-col justify-between relative overflow-hidden" style="background: ${gradientBg};">
+              <div class="flex justify-between items-center relative z-10">
+                <span class="px-2.5 py-1 bg-black/30 backdrop-blur-md text-white rounded-full text-[10px] font-black uppercase tracking-wider">
+                  ${art.topic || 'General'}
+                </span>
+                <span class="px-2.5 py-1 bg-white/90 text-gray-800 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
+                  CEFR ${art.cefrLevel || 'B1'}
+                </span>
+              </div>
+              <div class="text-3xl opacity-30 absolute -right-2 -bottom-2 select-none">📖</div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 space-y-2">
+              <h3 class="font-bubble text-lg font-black text-gray-800 line-clamp-2 leading-snug">
+                ${art.title || 'Untitled Article'}
+              </h3>
+              
+              <div class="flex items-center gap-2 text-xs font-extrabold text-gray-400 pt-1">
+                <span>👤 ${art.authorName || 'Anonymous'}</span>
+                <span>•</span>
+                <span>📌 ${art.source || 'Original'}</span>
               </div>
             </div>
           </div>
+
+          <!-- Bottom Action -->
+          <div class="px-4 pb-4 pt-1 flex items-center justify-between text-xs font-black text-pink-500">
+            <span>Read Article</span>
+            <span>➔</span>
+          </div>
         `;
-      }).join('');
+
+        grid.appendChild(card);
+      });
     }
 
-    // READER MODE LOGIC
-    function openReaderView(articleId) {
-      selectedArticle = loadedArticles.find(a => a.id === articleId);
-      if (!selectedArticle) return;
-
-      document.getElementById('libraryView').classList.add('hidden');
-      document.getElementById('readerView').classList.remove('hidden');
-
-      document.getElementById('readArticleBadge').innerText = selectedArticle.level;
-      document.getElementById('readArticleTitle').innerText = selectedArticle.title;
-      document.getElementById('readArticleAuthor').innerText = selectedArticle.author;
-      document.getElementById('readArticleSource').innerText = selectedArticle.source || 'Community';
-      document.getElementById('readArticleVietnamese').innerText = selectedArticle.vietnameseTranslation || "Không có bản dịch tiếng Việt cho bài đọc này.";
-
-      // Render interactive words
-      const words = selectedArticle.content.split(' ');
-      const interactiveHTML = words.map((w, idx) => {
-        const cleanWord = w.replace(/[^a-zA-Z]/g, "");
-        return `<span class="interactive-word" onclick="lookupWord('${cleanWord}', this)">${w}</span>`;
-      }).join(' ');
-
-      document.getElementById('readArticleBody').innerHTML = interactiveHTML;
-      
-      // Reset Dictionary State
-      document.getElementById('dictEmptyState').classList.remove('hidden');
-      document.getElementById('dictDetailState').classList.add('hidden');
-    }
-
-    function closeReaderView() {
-      document.getElementById('readerView').classList.add('hidden');
-      document.getElementById('libraryView').classList.remove('hidden');
-    }
-
-    function toggleBilingual() {
-      const isChecked = document.getElementById('bilingualToggle').checked;
-      document.getElementById('bilingualSection').classList.toggle('hidden', !isChecked);
-    }
-
-    // Smart Dictionary Lookup (Simulated Instant Response)
-    function lookupWord(word, el) {
-      if (!word) return;
-
-      document.querySelectorAll('.interactive-word').forEach(w => w.classList.remove('selected'));
-      if (el) el.classList.add('selected');
-
-      document.getElementById('dictEmptyState').classList.add('hidden');
-      document.getElementById('dictDetailState').classList.remove('hidden');
-
-      // Populate Mock Dictionary Details
-      selectedWordData = {
-        word: word,
-        ipa: `/${word.toLowerCase()}/`,
-        vietnamese: `Nghĩa tiếng Việt của từ "${word}"`,
-        englishDef: `Definition of the word "${word}" in English context.`,
-        synonyms: "sample, note",
-        antonyms: "none",
-        enExample: `This is an example sentence featuring the word ${word}.`,
-        viExample: `Đây là câu ví dụ minh họa cho từ ${word}.`
-      };
-
-      document.getElementById('dictWord').innerText = selectedWordData.word;
-      document.getElementById('dictIpa').innerText = selectedWordData.ipa;
-      document.getElementById('dictVietnamese').innerText = selectedWordData.vietnamese;
-      document.getElementById('dictEnglishDef').innerText = selectedWordData.englishDef;
-      document.getElementById('dictSynonyms').innerText = selectedWordData.synonyms;
-      document.getElementById('dictAntonyms').innerText = selectedWordData.antonyms;
-      document.getElementById('dictEnExample').innerText = `"${selectedWordData.enExample}"`;
-      document.getElementById('dictViExample').innerText = `"${selectedWordData.viExample}"`;
-    }
-
-    // Save Word to Vocabulary Notebook
-    async function saveToVocabNotebook() {
-      if (!selectedWordData || !currentUser) return;
-
-      const pillBtn = document.getElementById('saveVocabPill');
-      pillBtn.innerText = "⏳ Saving...";
-
-      try {
-        await db.collection("vocabularies").add({
-          userId: currentUser.uid,
-          word: selectedWordData.word,
-          ipa: selectedWordData.ipa,
-          vietnamese: selectedWordData.vietnamese,
-          englishDef: selectedWordData.englishDef,
-          example: selectedWordData.enExample,
-          savedAt: new Date()
-        });
-
-        pillBtn.className = "px-4 py-2 bg-emerald-500 text-white rounded-full text-xs font-black transition-all border-none cursor-default";
-        pillBtn.innerText = "✓ Saved!";
-      } catch (e) {
-        console.warn("Saved locally simulation:", e);
-        pillBtn.className = "px-4 py-2 bg-emerald-500 text-white rounded-full text-xs font-black transition-all border-none cursor-default";
-        pillBtn.innerText = "✓ Saved!";
-      }
-    }
-
-    // Mock Articles Data
-    function getMockArticles() {
-      return [
-        {
-          id: "mock1",
-          title: "The Future of Artificial Intelligence in Education",
-          topic: "Technology",
-          level: "B2",
-          avgCEFR: "B2",
-          author: "Alex Rivers",
-          source: "TechCrunch",
-          isPublic: true,
-          content: "Artificial intelligence is changing the way students learn around the world. With personalized feedback, reading platforms can adapt to individual proficiency levels seamlessly.",
-          vietnameseTranslation: "Trí tuệ nhân tạo đang thay đổi cách học sinh học tập trên toàn thế giới. Với phản hồi cá nhân hóa, các nền tảng đọc có thể thích ứng mượt mà với trình độ riêng của từng người."
-        },
-        {
-          id: "mock2",
-          title: "Exploring Deep Sea Ecosystems and Coral Reefs",
-          topic: "Science",
-          level: "C1",
-          avgCEFR: "C1",
-          author: "Dr. Clara Ocean",
-          source: "National Geographic",
-          isPublic: true,
-          content: "Deep ocean trenches contain unique biodiversity that scientists are only beginning to comprehend. Marine biology offers fascinating insights into extreme life forms.",
-          vietnameseTranslation: "Các rãnh đại dương sâu chứa đựng sự đa dạng sinh học độc đáo mà các nhà khoa học mới chỉ bắt đầu hiểu. Sinh học biển mang lại những góc nhìn hấp dẫn về các hình thái sống ở môi trường khắc nghiệt."
-        },
-        {
-          id: "mock3",
-          title: "Daily Morning Habits for Lifelong Success",
-          topic: "Story",
-          level: "A2",
-          avgCEFR: "A2",
-          author: "Sarah Jenkins",
-          source: "Medium",
-          isPublic: true,
-          content: "Waking up early and reading for twenty minutes can transform your day. Small habits lead to massive results over time.",
-          vietnameseTranslation: "Thức dậy sớm và đọc sách trong 20 phút có thể thay đổi ngày mới của bạn. Những thói quen nhỏ sẽ dẫn đến kết quả lớn theo thời gian."
-        }
-      ];
+    function handleLogout() {
+      auth.signOut().then(() => window.location.replace("index.html"));
     }
   </script>
 </body>
