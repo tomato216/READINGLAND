@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>READINGLAND - Your Cozy Reading Corner</title>
+  <title>READINGLAND - Smart English Reading Platform</title>
   
-  <!-- Google Fonts: Fredoka & Nunito -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
@@ -13,135 +13,240 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
   <style>
     body {
       font-family: 'Nunito', sans-serif;
       background: linear-gradient(135deg, #FFF5F5 0%, #EBF8FF 50%, #F0FFF4 100%);
     }
-    
-    .font-bubble {
-      font-family: 'Fredoka', cursive;
-    }
+    .font-bubble { font-family: 'Fredoka', cursive; }
 
-    /* Hiệu ứng Chữ Nổi 3D Pastel */
-    .bubble-title {
-      color: #FF7B9C;
-      text-shadow: 
-        3px 3px 0px #FFC2D1,
-        6px 6px 0px #FFE5EC,
-        8px 8px 12px rgba(255, 123, 156, 0.25);
-      letter-spacing: 2px;
-    }
-
-    /* Hiệu ứng Nút Bấm 3D Nẩy */
     .btn-3d {
       transition: all 0.15s ease;
-      box-shadow: 0px 6px 0px var(--shadow-color);
+      box-shadow: 0px 5px 0px var(--shadow-color);
     }
-    
     .btn-3d:hover {
       transform: translateY(-2px);
-      box-shadow: 0px 8px 0px var(--shadow-color);
+      box-shadow: 0px 7px 0px var(--shadow-color);
     }
-    
     .btn-3d:active {
-      transform: translateY(4px);
+      transform: translateY(3px);
       box-shadow: 0px 2px 0px var(--shadow-color);
     }
 
-    .btn-primary {
-      background-color: #FF7B9C;
-      color: #FFFFFF;
-      --shadow-color: #E05275;
-    }
-
-    .btn-secondary-1 {
-      background-color: #A8E6CF;
-      color: #24523E;
-      --shadow-color: #62B897;
-    }
-
-    .btn-secondary-2 {
-      background-color: #FFD3B6;
-      color: #5C3215;
-      --shadow-color: #E8A174;
-    }
-
-    .btn-secondary-3 {
-      background-color: #D4A5A5;
-      color: #FFFFFF;
-      --shadow-color: #A57373;
-    }
+    .btn-primary { background-color: #FF7B9C; color: #FFFFFF; --shadow-color: #E05275; }
+    .btn-secondary { background-color: #A8E6CF; color: #24523E; --shadow-color: #62B897; }
+    .btn-purple { background-color: #BDB2FF; color: #3C2A80; --shadow-color: #8C7CFF; }
 
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
+      50% { transform: translateY(-10px); }
     }
-    
-    .floating {
-      animation: float 4s ease-in-out infinite;
-    }
+    .animate-float { animation: float 3s infinite ease-in-out; }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-x-hidden text-gray-700">
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-8 text-gray-700">
 
-  <!-- Họa tiết mây trôi trang trí -->
-  <div class="absolute top-6 left-8 text-4xl opacity-40 floating">☁️</div>
-  <div class="absolute top-10 right-10 text-3xl opacity-40 floating" style="animation-delay: 1.5s;">✨</div>
-  <div class="absolute bottom-8 left-10 text-3xl opacity-40 floating" style="animation-delay: 2s;">📖</div>
-  <div class="absolute bottom-10 right-12 text-4xl opacity-40 floating" style="animation-delay: 0.8s;">☁️</div>
-
-  <!-- Bố cục Trung tâm (Đã căn chỉnh thu gọn khoảng cách) -->
-  <main class="max-w-2xl w-full text-center z-10 flex flex-col items-center my-auto py-4">
+  <!-- Header / Navbar -->
+  <header class="w-full max-w-4xl flex items-center justify-between py-4 border-b-2 border-pink-100 mb-6">
+    <div class="flex items-center gap-2">
+      <span class="text-3xl">📚</span>
+      <h1 class="font-bubble text-3xl font-black text-pink-400 tracking-wide">READINGLAND</h1>
+    </div>
     
-    <!-- Tag Welcome -->
-    <span class="inline-block px-3 py-1 mb-2 text-xs font-extrabold text-pink-500 bg-pink-100/80 rounded-full tracking-wider uppercase shadow-sm">
-      ✨ Welcome to ✨
-    </span>
+    <!-- User Status Header -->
+    <div id="userHeaderArea" class="flex items-center gap-3">
+      <!-- Sẽ được fill tự động bằng JS -->
+    </div>
+  </header>
 
-    <!-- Tiêu đề READINGLAND -->
-    <h1 class="font-bubble text-5xl sm:text-6xl md:text-7xl font-black bubble-title mb-2 select-none">
-      READINGLAND
-    </h1>
+  <!-- Main Hero Section -->
+  <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center my-auto py-4">
+    
+    <!-- Cột trái: Giới thiệu ứng dụng -->
+    <div class="space-y-4 text-center md:text-left">
+      <div class="inline-block px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-xs font-black tracking-wider uppercase">
+        🚀 Smart CEFR Reading Platform
+      </div>
+      <h2 class="font-bubble text-4xl sm:text-5xl font-black text-gray-800 leading-tight">
+        Master English Reading with CEFR Analytics! ✨
+      </h2>
+      <p class="text-gray-600 font-semibold text-base sm:text-lg leading-relaxed">
+        READINGLAND giúp bạn lưu trữ bài đọc, tự động phân tích tỷ lệ từ vựng chuẩn CEFR (<strong class="text-emerald-500">A1</strong> đến <strong class="text-rose-500">C2</strong>) và chia sẻ bài đọc hữu ích với cộng đồng học tập!
+      </p>
 
-    <!-- Dòng mô tả -->
-    <p class="text-lg sm:text-xl font-bold text-gray-500 mb-6 tracking-wide">
-      Your cozy reading corner 📖✨
-    </p>
-
-    <!-- Nút Bắt đầu chính -->
-    <div class="w-full max-w-xs mb-6">
-      <a href="addnewarticle.html" class="btn-3d btn-primary w-full py-3.5 px-6 rounded-2xl text-lg font-extrabold flex items-center justify-center gap-2 no-underline">
-        <span class="text-xl">➕</span>
-        <span>Add New Article</span>
-      </a>
+      <!-- Các tính năng nổi bật -->
+      <div class="grid grid-cols-2 gap-3 pt-2 text-left">
+        <div class="bg-white/80 backdrop-blur-sm p-3 rounded-2xl border-2 border-pink-100 shadow-sm flex items-center gap-2">
+          <span class="text-2xl">📊</span>
+          <span class="text-xs font-extrabold text-gray-700">Detailed CEFR % Breakdown</span>
+        </div>
+        <div class="bg-white/80 backdrop-blur-sm p-3 rounded-2xl border-2 border-blue-100 shadow-sm flex items-center gap-2">
+          <span class="text-2xl">🌐</span>
+          <span class="text-xs font-extrabold text-gray-700">Community Sharing Hub</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Các Nút Phụ Bên Dưới -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-xl">
+    <!-- Cột phải: Form Đăng Nhập / Đăng Ký HOẶC Bảng Bắt Đầu -->
+    <div class="bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border-4 border-pink-100 relative">
       
-      <!-- Nút Thư viện -->
-      <a href="mylibrary.html" class="btn-3d btn-secondary-1 py-2.5 px-3 rounded-xl font-extrabold text-sm sm:text-base flex items-center justify-center gap-1.5 no-underline">
-        <span class="text-lg">📚</span>
-        <span>My Library</span>
-      </a>
+      <!-- Khối khi CHƯA đăng nhập -->
+      <div id="authBox">
+        <!-- Tab Chuyển Đổi Login / Register -->
+        <div class="flex bg-pink-50 p-1 rounded-2xl mb-6">
+          <button id="tabLogin" onclick="switchTab('login')" class="flex-1 py-2 rounded-xl font-extrabold text-sm transition-all text-pink-600 bg-white shadow-sm">Login</button>
+          <button id="tabRegister" onclick="switchTab('register')" class="flex-1 py-2 rounded-xl font-extrabold text-sm transition-all text-gray-500">Sign Up</button>
+        </div>
 
-      <!-- Nút Sổ từ vựng -->
-      <a href="vocabularynotebook.html" class="btn-3d btn-secondary-2 py-2.5 px-3 rounded-xl font-extrabold text-sm sm:text-base flex items-center justify-center gap-1.5 no-underline">
-        <span class="text-lg">📇</span>
-        <span>Vocabulary Notebook</span>
-      </a>
+        <!-- Form Đăng Nhập -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-extrabold text-gray-600 mb-1">Email Address</label>
+            <input type="email" id="loginEmail" required placeholder="yourname@gmail.com" class="w-full px-4 py-2.5 rounded-xl border-2 border-pink-100 focus:border-pink-300 focus:outline-none font-bold text-sm bg-pink-50/20">
+          </div>
+          <div>
+            <label class="block text-xs font-extrabold text-gray-600 mb-1">Password</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border-2 border-pink-100 focus:border-pink-300 focus:outline-none font-bold text-sm bg-pink-50/20">
+          </div>
+          <button type="submit" class="btn-3d btn-primary w-full py-3 rounded-xl font-extrabold text-base border-none cursor-pointer mt-2">
+            🚀 Start Reading
+          </button>
+        </form>
 
-      <!-- Nút Tiến độ -->
-      <a href="myprogress.html" class="btn-3d btn-secondary-3 py-2.5 px-3 rounded-xl font-extrabold text-sm sm:text-base flex items-center justify-center gap-1.5 no-underline">
-        <span class="text-lg">📊</span>
-        <span>My Progress</span>
-      </a>
+        <!-- Form Đăng Ký -->
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 hidden">
+          <div>
+            <label class="block text-xs font-extrabold text-gray-600 mb-1">Your Full Name / Nickname</label>
+            <input type="text" id="regName" required placeholder="e.g. Alex Minh" class="w-full px-4 py-2.5 rounded-xl border-2 border-purple-100 focus:border-purple-300 focus:outline-none font-bold text-sm bg-purple-50/20">
+          </div>
+          <div>
+            <label class="block text-xs font-extrabold text-gray-600 mb-1">Email Address</label>
+            <input type="email" id="regEmail" required placeholder="yourname@gmail.com" class="w-full px-4 py-2.5 rounded-xl border-2 border-purple-100 focus:border-purple-300 focus:outline-none font-bold text-sm bg-purple-50/20">
+          </div>
+          <div>
+            <label class="block text-xs font-extrabold text-gray-600 mb-1">Password (Min 6 chars)</label>
+            <input type="password" id="regPassword" required minlength="6" placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border-2 border-purple-100 focus:border-purple-300 focus:outline-none font-bold text-sm bg-purple-50/20">
+          </div>
+          <button type="submit" class="btn-3d btn-purple w-full py-3 rounded-xl font-extrabold text-base border-none cursor-pointer mt-2">
+            🎉 Create Account
+          </button>
+        </form>
+      </div>
+
+      <!-- Khối khi ĐÃ đăng nhập -->
+      <div id="loggedInBox" class="hidden text-center space-y-4 py-4">
+        <div class="text-6xl animate-float inline-block">🌟</div>
+        <div>
+          <h3 class="font-bubble text-2xl text-gray-800 font-bold">Welcome Back,</h3>
+          <p id="userNameDisplay" class="font-bubble text-3xl text-pink-500 font-black">Learner</p>
+        </div>
+        
+        <div class="space-y-3 pt-2">
+          <a href="mylibrary.html" class="btn-3d btn-secondary w-full py-3.5 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 no-underline block">
+            📚 Explore Library
+          </a>
+          <a href="addnewarticle.html" class="btn-3d btn-primary w-full py-3.5 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 no-underline block">
+            ✍️ Add New Article
+          </a>
+        </div>
+      </div>
 
     </div>
-
   </main>
 
+  <!-- Footer -->
+  <footer class="w-full max-w-4xl text-center py-4 border-t-2 border-pink-100 mt-6 text-xs text-gray-400 font-bold">
+    READINGLAND © 2026 - Designed for English Learners Worldwide 🌍
+  </footer>
+
+  <!-- SCRIPT KẾT NỐI FIREBASE AUTH -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
+      authDomain: "readingland-bccc1.firebaseapp.com",
+      projectId: "readingland-bccc1",
+      storageBucket: "readingland-bccc1.firebasestorage.app",
+      messagingSenderId: "941153833738",
+      appId: "1:941153833738:web:0628eb2998541913ae20f3",
+      measurementId: "G-DZZGN7R0PR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Theo dõi trạng thái Đăng nhập
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // Đã đăng nhập
+        document.getElementById('authBox').classList.add('hidden');
+        document.getElementById('loggedInBox').classList.remove('hidden');
+        
+        const displayName = user.displayName || user.email.split('@')[0];
+        document.getElementById('userNameDisplay').innerText = displayName;
+
+        document.getElementById('userHeaderArea').innerHTML = `
+          <span class="text-xs font-black text-gray-600 bg-pink-100 px-3 py-1.5 rounded-full">👤 ${displayName}</span>
+          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">Logout</button>
+        `;
+      } else {
+        // Chưa đăng nhập
+        document.getElementById('authBox').classList.remove('hidden');
+        document.getElementById('loggedInBox').classList.add('hidden');
+        document.getElementById('userHeaderArea').innerHTML = `
+          <span class="text-xs font-extrabold text-gray-400">Guest Mode</span>
+        `;
+      }
+    });
+
+    function switchTab(tab) {
+      if (tab === 'login') {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('tabLogin').className = "flex-1 py-2 rounded-xl font-extrabold text-sm transition-all text-pink-600 bg-white shadow-sm";
+        document.getElementById('tabRegister').className = "flex-1 py-2 rounded-xl font-extrabold text-sm transition-all text-gray-500";
+      } else {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+        document.getElementById('tabRegister').className = "flex-1 py-2 rounded-xl font-extrabold text-sm transition-all text-purple-600 bg-white shadow-sm";
+        document.getElementById('tabLogin').className = "flex-1 py-2 rounded-xl font-extrabold text-sm transition-all text-gray-500";
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+
+      try {
+        const res = await auth.createUserWithEmailAndPassword(email, password);
+        await res.user.updateProfile({ displayName: name });
+        window.location.reload();
+      } catch (err) {
+        alert("Registration failed: " + err.message);
+      }
+    }
+
+    function handleLogout() {
+      auth.signOut();
+    }
+  </script>
 </body>
 </html>
