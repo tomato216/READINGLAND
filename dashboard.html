@@ -24,7 +24,7 @@
     }
     .font-bubble { font-family: 'Fredoka', cursive; }
 
-    /* Hiệu ứng Nút / Card 3D Cute */
+    /* 3D Cute Card & Button Effects */
     .card-3d {
       transition: all 0.2s ease;
       box-shadow: 0px 8px 0px var(--shadow-color);
@@ -38,11 +38,10 @@
       box-shadow: 0px 3px 0px var(--shadow-color);
     }
 
-    /* Bộ màu Pastel sặc sỡ */
+    /* Pastel Color Palettes */
     .card-add { background-color: #FFB7B2; --shadow-color: #E28882; }
     .card-library { background-color: #A8E6CF; --shadow-color: #62B897; }
     .card-vocab { background-color: #FFD166; --shadow-color: #E0B034; }
-    .card-profile { background-color: #E2F0CB; --shadow-color: #B5D293; }
 
     @keyframes float {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -61,14 +60,16 @@
       <h1 class="font-bubble text-3xl font-black text-pink-400 tracking-wide">READINGLAND</h1>
     </a>
     
+    <!-- Compact Profile Area (Top-Right Corner) -->
     <div id="userHeaderArea" class="flex items-center gap-3">
-      <span class="text-xs font-bold text-gray-400">Loading...</span>
+      <span class="text-xs font-bold text-gray-400">Loading profile...</span>
     </div>
   </header>
 
   <!-- Main Dashboard Grid -->
   <main class="w-full max-w-5xl my-auto py-6 space-y-8">
     
+    <!-- Welcome Header -->
     <div class="text-center space-y-2">
       <div class="inline-block px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-xs font-black tracking-wider uppercase mb-1">
         ✨ Choose Your Activity
@@ -78,65 +79,50 @@
       </h2>
     </div>
 
-    <!-- Lưới các ô chức năng -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
+    <!-- 3 Main Action Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
       
-      <!-- Ô 1: Thêm Bài Đọc Mới -->
-      <a href="addnewarticle.html" class="card-3d card-add p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+      <!-- Card 1: Add New Reading -->
+      <a href="addnewarticle.html" class="card-3d card-add p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group min-h-[220px]">
         <div class="space-y-3 relative z-10">
           <div class="text-5xl animate-float inline-block">✍️</div>
-          <h3 class="font-bubble text-2xl font-black text-white drop-shadow-sm">Thêm Bài Đọc</h3>
+          <h3 class="font-bubble text-2xl font-black text-white drop-shadow-sm">Add New Reading</h3>
           <p class="text-xs font-extrabold text-white/90 leading-relaxed">
-            Nhập bài viết mới, tự động phân tích cấp độ từ vựng CEFR và lưu trữ.
+            Import new articles, automatically break down CEFR vocabulary levels, and store them securely.
           </p>
         </div>
         <div class="mt-6 pt-3 border-t border-white/30 flex items-center justify-between text-xs font-black text-white">
-          <span>Tạo ngay</span>
+          <span>Create Now</span>
           <span>➔</span>
         </div>
       </a>
 
-      <!-- Ô 2: Thư Viện Bài Đọc (Cộng đồng) -->
-      <a href="communitylibrary.html" class="card-3d card-library p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+      <!-- Card 2: Community Library -->
+      <a href="communitylibrary.html" class="card-3d card-library p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group min-h-[220px]">
         <div class="space-y-3 relative z-10">
           <div class="text-5xl animate-float inline-block" style="animation-delay: 1s;">🌐</div>
-          <h3 class="font-bubble text-2xl font-black text-emerald-900 drop-shadow-sm">Thư Viện Bài Đọc</h3>
+          <h3 class="font-bubble text-2xl font-black text-emerald-900 drop-shadow-sm">Reading Library</h3>
           <p class="text-xs font-extrabold text-emerald-900/80 leading-relaxed">
-            Khám phá kho bài đọc chia sẻ từ cộng đồng theo từng trình độ CEFR.
+            Explore articles shared by the community, organized by CEFR proficiency levels.
           </p>
         </div>
         <div class="mt-6 pt-3 border-t border-emerald-800/20 flex items-center justify-between text-xs font-black text-emerald-900">
-          <span>Khám phá</span>
+          <span>Explore Hub</span>
           <span>➔</span>
         </div>
       </a>
 
-      <!-- Ô 3: Sổ Tay Từ Vựng -->
-      <a href="vocabnotebook.html" class="card-3d card-vocab p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+      <!-- Card 3: Vocabulary Notebook -->
+      <a href="vocabnotebook.html" class="card-3d card-vocab p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group min-h-[220px]">
         <div class="space-y-3 relative z-10">
           <div class="text-5xl animate-float inline-block" style="animation-delay: 2s;">📖</div>
-          <h3 class="font-bubble text-2xl font-black text-amber-950 drop-shadow-sm">Sổ Tay Từ Vựng</h3>
+          <h3 class="font-bubble text-2xl font-black text-amber-950 drop-shadow-sm">Vocab Notebook</h3>
           <p class="text-xs font-extrabold text-amber-950/80 leading-relaxed">
-            Xem lại các từ mới đã lưu, ôn tập theo thẻ ghi nhớ (Flashcards).
+            Review your saved vocabulary items and practice with interactive digital flashcards.
           </p>
         </div>
         <div class="mt-6 pt-3 border-t border-amber-900/20 flex items-center justify-between text-xs font-black text-amber-950">
-          <span>Ôn tập</span>
-          <span>➔</span>
-        </div>
-      </a>
-
-      <!-- Ô 4: Trang Cá Nhân -->
-      <a href="profile.html" class="card-3d card-profile p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
-        <div class="space-y-3 relative z-10">
-          <div class="text-5xl animate-float inline-block" style="animation-delay: 3s;">👤</div>
-          <h3 class="font-bubble text-2xl font-black text-lime-950 drop-shadow-sm">Trang Cá Nhân</h3>
-          <p class="text-xs font-extrabold text-lime-950/80 leading-relaxed">
-            Quản lý hồ sơ, lịch sử học tập và danh sách bài đọc cá nhân của bạn.
-          </p>
-        </div>
-        <div class="mt-6 pt-3 border-t border-lime-900/20 flex items-center justify-between text-xs font-black text-lime-950">
-          <span>Xem trang</span>
+          <span>Review Now</span>
           <span>➔</span>
         </div>
       </a>
@@ -169,9 +155,15 @@
         let displayName = user.displayName || user.email?.split('@')[0] || "Learner";
         document.getElementById('welcomeUserName').innerText = displayName;
 
+        // Render compact profile button in header
         document.getElementById('userHeaderArea').innerHTML = `
-          <a href="profile.html" class="text-xs font-black text-gray-700 bg-pink-100 px-3.5 py-2 rounded-full hover:bg-pink-200 transition-all no-underline">👤 ${displayName}</a>
-          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">Logout</button>
+          <a href="profile.html" class="flex items-center gap-1.5 text-xs font-black text-pink-600 bg-pink-100/80 px-3.5 py-1.5 rounded-full hover:bg-pink-200 transition-all no-underline border border-pink-200">
+            <span>👤</span>
+            <span>${displayName}</span>
+          </a>
+          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">
+            Logout
+          </button>
         `;
       } else {
         window.location.replace("index.html");
