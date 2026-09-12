@@ -24,7 +24,7 @@
     }
     .font-bubble { font-family: 'Fredoka', cursive; }
 
-    /* Hiệu ứng Nút & Thẻ 3D */
+    /* Hiệu ứng Nút / Card 3D Cute */
     .card-3d {
       transition: all 0.2s ease;
       box-shadow: 0px 8px 0px var(--shadow-color);
@@ -35,125 +35,109 @@
     }
     .card-3d:active {
       transform: translateY(2px);
-      box-shadow: 0px 4px 0px var(--shadow-color);
+      box-shadow: 0px 3px 0px var(--shadow-color);
     }
 
-    .card-pink { background-color: #FFFFFF; border-color: #FFB7C5; --shadow-color: #FFD1DA; }
-    .card-mint { background-color: #FFFFFF; border-color: #A8E6CF; --shadow-color: #C7F3E3; }
-    .card-purple { background-color: #FFFFFF; border-color: #D8B4FE; --shadow-color: #E9D5FF; }
-    .card-yellow { background-color: #FFFFFF; border-color: #FDE047; --shadow-color: #FEF08A; }
+    /* Bộ màu Pastel sặc sỡ */
+    .card-add { background-color: #FFB7B2; --shadow-color: #E28882; }
+    .card-library { background-color: #A8E6CF; --shadow-color: #62B897; }
+    .card-vocab { background-color: #FFD166; --shadow-color: #E0B034; }
+    .card-profile { background-color: #E2F0CB; --shadow-color: #B5D293; }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
     }
-    .animate-float { animation: float 3s infinite ease-in-out; }
+    .animate-float { animation: float 4s infinite ease-in-out; }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col justify-between p-4 sm:p-8 text-gray-700">
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-8 text-gray-700">
 
   <!-- Header / Navbar -->
-  <header class="w-full max-w-5xl mx-auto flex items-center justify-between py-4 border-b-2 border-pink-100 mb-8">
+  <header class="w-full max-w-5xl flex items-center justify-between py-4 border-b-2 border-pink-100 mb-6">
     <a href="dashboard.html" class="flex items-center gap-2 no-underline">
-      <span class="text-3xl animate-float">📚</span>
+      <span class="text-3xl">📚</span>
       <h1 class="font-bubble text-3xl font-black text-pink-400 tracking-wide">READINGLAND</h1>
     </a>
     
-    <!-- User Status Header -->
     <div id="userHeaderArea" class="flex items-center gap-3">
-      <!-- Tự động cập nhật bằng JS -->
+      <span class="text-xs font-bold text-gray-400">Loading...</span>
     </div>
   </header>
 
-  <!-- Main Content: Welcome Banner & Dashboard Grid -->
-  <main class="w-full max-w-5xl mx-auto my-auto space-y-8">
+  <!-- Main Dashboard Grid -->
+  <main class="w-full max-w-5xl my-auto py-6 space-y-8">
     
-    <!-- Welcome Banner -->
-    <div class="bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl border-4 border-pink-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
-      <div class="space-y-2 text-center sm:text-left">
-        <span class="px-3 py-1 bg-pink-100 text-pink-500 rounded-full text-xs font-extrabold uppercase tracking-wider">
-          👋 Learning Hub
-        </span>
-        <h2 class="font-bubble text-3xl sm:text-4xl font-black text-gray-800">
-          Ready for today's reading? ✨
-        </h2>
-        <p class="text-gray-500 font-bold text-sm sm:text-base">
-          Chọn một tính năng bên dưới để bắt đầu hành trình luyện đọc Tiếng Anh ngay thôi!
-        </p>
+    <div class="text-center space-y-2">
+      <div class="inline-block px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-xs font-black tracking-wider uppercase mb-1">
+        ✨ Choose Your Activity
       </div>
-      <div class="text-6xl animate-float">
-        🌟
-      </div>
+      <h2 class="font-bubble text-3xl sm:text-4xl font-black text-gray-800">
+        Hi <span id="welcomeUserName" class="text-pink-500">Learner</span>, what would you like to do today? 🎈
+      </h2>
     </div>
 
-    <!-- 4 Ô Tính Năng (Dashboard Cards) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Lưới các ô chức năng -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
       
-      <!-- Ô 1: Thêm bài đọc mới -->
-      <a href="addnewarticle.html" class="card-3d card-pink rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
-        <div class="space-y-3">
-          <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-            ✍️
-          </div>
-          <h3 class="font-bubble text-xl font-extrabold text-pink-500">Thêm Bài Đọc Mới</h3>
-          <p class="text-xs text-gray-500 font-bold leading-relaxed">
-            Dán đoạn văn bản hoặc bài báo bất kỳ để hệ thống phân tích tỷ lệ từ vựng chuẩn CEFR.
+      <!-- Ô 1: Thêm Bài Đọc Mới -->
+      <a href="addnewarticle.html" class="card-3d card-add p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+        <div class="space-y-3 relative z-10">
+          <div class="text-5xl animate-float inline-block">✍️</div>
+          <h3 class="font-bubble text-2xl font-black text-white drop-shadow-sm">Thêm Bài Đọc</h3>
+          <p class="text-xs font-extrabold text-white/90 leading-relaxed">
+            Nhập bài viết mới, tự động phân tích cấp độ từ vựng CEFR và lưu trữ.
           </p>
         </div>
-        <div class="flex items-center text-xs font-black text-pink-400 group-hover:translate-x-1 transition-transform">
-          Bắt đầu phân tích ➔
+        <div class="mt-6 pt-3 border-t border-white/30 flex items-center justify-between text-xs font-black text-white">
+          <span>Tạo ngay</span>
+          <span>➔</span>
         </div>
       </a>
 
-      <!-- Ô 2: Thư viện cộng đồng -->
-      <a href="community.html" class="card-3d card-mint rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
-        <div class="space-y-3">
-          <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-            🌐
-          </div>
-          <h3 class="font-bubble text-xl font-extrabold text-emerald-600">Thư Viện Cộng Đồng</h3>
-          <p class="text-xs text-gray-500 font-bold leading-relaxed">
-            Khám phá các bài đọc phong phú do cộng đồng người học đóng góp và chia sẻ.
+      <!-- Ô 2: Thư Viện Bài Đọc (Cộng đồng) -->
+      <a href="communitylibrary.html" class="card-3d card-library p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+        <div class="space-y-3 relative z-10">
+          <div class="text-5xl animate-float inline-block" style="animation-delay: 1s;">🌐</div>
+          <h3 class="font-bubble text-2xl font-black text-emerald-900 drop-shadow-sm">Thư Viện Bài Đọc</h3>
+          <p class="text-xs font-extrabold text-emerald-900/80 leading-relaxed">
+            Khám phá kho bài đọc chia sẻ từ cộng đồng theo từng trình độ CEFR.
           </p>
         </div>
-        <div class="flex items-center text-xs font-black text-emerald-500 group-hover:translate-x-1 transition-transform">
-          Khám phá ngay ➔
+        <div class="mt-6 pt-3 border-t border-emerald-800/20 flex items-center justify-between text-xs font-black text-emerald-900">
+          <span>Khám phá</span>
+          <span>➔</span>
         </div>
       </a>
 
-      <!-- Ô 3: Sổ tay từ vựng -->
-      <a href="vocabulary.html" class="card-3d card-purple rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
-        <div class="space-y-3">
-          <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-            📖
-          </div>
-          <h3 class="font-bubble text-xl font-extrabold text-purple-600">Sổ Tay Từ Vựng</h3>
-          <p class="text-xs text-gray-500 font-bold leading-relaxed">
-            Lưu giữ và ôn tập các từ mới đã lưu trong quá trình đọc bài theo cấp độ CEFR.
+      <!-- Ô 3: Sổ Tay Từ Vựng -->
+      <a href="vocabnotebook.html" class="card-3d card-vocab p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+        <div class="space-y-3 relative z-10">
+          <div class="text-5xl animate-float inline-block" style="animation-delay: 2s;">📖</div>
+          <h3 class="font-bubble text-2xl font-black text-amber-950 drop-shadow-sm">Sổ Tay Từ Vựng</h3>
+          <p class="text-xs font-extrabold text-amber-950/80 leading-relaxed">
+            Xem lại các từ mới đã lưu, ôn tập theo thẻ ghi nhớ (Flashcards).
           </p>
         </div>
-        <div class="flex items-center text-xs font-black text-purple-500 group-hover:translate-x-1 transition-transform">
-          Mở sổ tay ➔
+        <div class="mt-6 pt-3 border-t border-amber-900/20 flex items-center justify-between text-xs font-black text-amber-950">
+          <span>Ôn tập</span>
+          <span>➔</span>
         </div>
       </a>
 
-      <!-- Ô 4: Trang cá nhân (Đang phát triển) -->
-      <a href="profile.html" class="card-3d card-yellow rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
-        <div class="space-y-3">
-          <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-            👤
-          </div>
-          <div class="flex items-center gap-2">
-            <h3 class="font-bubble text-xl font-extrabold text-amber-600">Trang Cá Nhân</h3>
-            <span class="text-[10px] font-black bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Soon</span>
-          </div>
-          <p class="text-xs text-gray-400 font-bold leading-relaxed">
-            Xem tiến độ học tập, thống kê bài đọc đã hoàn thành và quản lý thông tin tài khoản.
+      <!-- Ô 4: Trang Cá Nhân -->
+      <a href="profile.html" class="card-3d card-profile p-6 rounded-3xl flex flex-col justify-between no-underline text-gray-800 relative overflow-hidden group">
+        <div class="space-y-3 relative z-10">
+          <div class="text-5xl animate-float inline-block" style="animation-delay: 3s;">👤</div>
+          <h3 class="font-bubble text-2xl font-black text-lime-950 drop-shadow-sm">Trang Cá Nhân</h3>
+          <p class="text-xs font-extrabold text-lime-950/80 leading-relaxed">
+            Quản lý hồ sơ, lịch sử học tập và danh sách bài đọc cá nhân của bạn.
           </p>
         </div>
-        <div class="flex items-center text-xs font-black text-amber-500 group-hover:translate-x-1 transition-transform">
-          Xem thông tin ➔
+        <div class="mt-6 pt-3 border-t border-lime-900/20 flex items-center justify-between text-xs font-black text-lime-950">
+          <span>Xem trang</span>
+          <span>➔</span>
         </div>
       </a>
 
@@ -161,11 +145,11 @@
   </main>
 
   <!-- Footer -->
-  <footer class="w-full max-w-5xl mx-auto text-center py-4 border-t-2 border-pink-100 mt-8 text-xs text-gray-400 font-bold">
+  <footer class="w-full max-w-5xl text-center py-4 border-t-2 border-pink-100 mt-6 text-xs text-gray-400 font-bold">
     READINGLAND © 2026 - Designed for English Learners Worldwide 🌍
   </footer>
 
-  <!-- Firebase Script -->
+  <!-- SCRIPT FIREBASE -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
@@ -180,27 +164,23 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Kiểm tra đăng nhập
     auth.onAuthStateChanged((user) => {
       if (user) {
         let displayName = user.displayName || user.email?.split('@')[0] || "Learner";
+        document.getElementById('welcomeUserName').innerText = displayName;
+
         document.getElementById('userHeaderArea').innerHTML = `
-          <span class="text-xs font-black text-pink-600 bg-pink-100 px-3.5 py-2 rounded-full border-2 border-pink-200">
-            👤 ${displayName}
-          </span>
-          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">
-            Logout
-          </button>
+          <a href="profile.html" class="text-xs font-black text-gray-700 bg-pink-100 px-3.5 py-2 rounded-full hover:bg-pink-200 transition-all no-underline">👤 ${displayName}</a>
+          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">Logout</button>
         `;
       } else {
-        // Nếu chưa đăng nhập thì đẩy về trang index
-        window.location.href = "index.html";
+        window.location.replace("index.html");
       }
     });
 
     function handleLogout() {
       auth.signOut().then(() => {
-        window.location.href = "index.html";
+        window.location.replace("index.html");
       });
     }
   </script>
