@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New Article - READINGLAND</title>
+  
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #FFF5F5 0%, #EBF8FF 50%, #F0FFF4 100%);
+    }
+    
+    .font-bubble { font-family: 'Fredoka', cursive; }
+
+    /* Hiệu ứng Nút Bấm 3D */
+    .btn-3d {
+      transition: all 0.15s ease;
+      box-shadow: 0px 5px 0px var(--shadow-color);
+    }
+    .btn-3d:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 7px 0px var(--shadow-color);
+    }
+    .btn-3d:active {
+      transform: translateY(3px);
+      box-shadow: 0px 2px 0px var(--shadow-color);
+    }
+
+    .btn-primary {
+      background-color: #FF7B9C;
+      color: #FFFFFF;
+      --shadow-color: #E05275;
+    }
+
+    .btn-home {
+      background-color: #A8E6CF;
+      color: #24523E;
+      --shadow-color: #62B897;
+    }
+
+    /* Hiệu ứng Hoạt hình Nhún Nhảy Pop-up Loading */
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-12px) scale(1.05); }
+    }
+    .animate-bounce-cute {
+      animation: bounce-slow 1.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center p-4 sm:p-6 text-gray-700 relative">
+
+  <!-- Header Thanh Điều Hướng Trên Cùng -->
+  <header class="w-full max-w-3xl flex items-center justify-between mb-6 z-10">
+    <a href="index.html" class="btn-3d btn-home py-2 px-4 rounded-xl font-extrabold text-sm flex items-center gap-2 no-underline">
+      <span>🏠</span>
+      <span>Back to Home</span>
+    </a>
+    <h2 class="font-bubble text-2xl sm:text-3xl font-black text-pink-400">READINGLAND</h2>
+  </header>
+
+  <!-- Khung Form Nhập Bài Đọc chính -->
+  <main class="w-full max-w-3xl bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border-4 border-pink-100 z-10 mb-8">
+    
+    <div class="text-center mb-6">
+      <h1 class="font-bubble text-3xl sm:text-4xl text-gray-800 mb-1">Add New Article 📝</h1>
+      <p class="text-sm text-gray-500 font-semibold">Store your favorite English reading materials for later study!</p>
+    </div>
+
+    <form id="articleForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+      
+      <!-- Ô Nhập Title (Bắt buộc) -->
+      <div>
+        <label class="block text-sm font-extrabold text-gray-700 mb-1">
+          Article Title <span class="text-pink-500">*</span>
+        </label>
+        <input type="text" id="articleTitle" required placeholder="e.g. The Benefits of Daily Reading" 
+               class="w-full px-4 py-3 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none font-bold text-gray-700 bg-pink-50/30 transition-all">
+      </div>
+
+      <!-- Khung 3 Ô Phụ (Author, Source, Date) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- Author -->
+        <div>
+          <label class="block text-xs font-extrabold text-gray-600 mb-1">Author (Optional)</label>
+          <input type="text" id="articleAuthor" placeholder="e.g. John Doe" 
+                 class="w-full px-3 py-2.5 rounded-xl border-2 border-blue-100 focus:border-blue-300 focus:outline-none text-sm font-semibold bg-blue-50/20">
+        </div>
+
+        <!-- Source -->
+        <div>
+          <label class="block text-xs font-extrabold text-gray-600 mb-1">Source (Optional)</label>
+          <input type="text" id="articleSource" placeholder="e.g. BBC News / Book" 
+                 class="w-full px-3 py-2.5 rounded-xl border-2 border-green-100 focus:border-green-300 focus:outline-none text-sm font-semibold bg-green-50/20">
+        </div>
+
+        <!-- Date -->
+        <div>
+          <label class="block text-xs font-extrabold text-gray-600 mb-1">Release Date (Optional)</label>
+          <input type="date" id="articleDate" 
+                 class="w-full px-3 py-2.5 rounded-xl border-2 border-yellow-100 focus:border-yellow-300 focus:outline-none text-sm font-semibold bg-yellow-50/20 text-gray-600">
+        </div>
+      </div>
+
+      <!-- Ô Nhập Nội Dung Bài Đọc (To) -->
+      <div>
+        <label class="block text-sm font-extrabold text-gray-700 mb-1">
+          Content <span class="text-pink-500">*</span>
+        </label>
+        <textarea id="articleContent" required rows="10" 
+                  placeholder="Paste your article content here..." 
+                  class="w-full p-4 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none font-medium italic text-gray-600 bg-pink-50/20 transition-all resize-y"></textarea>
+      </div>
+
+      <!-- Nút Lưu Bài Viết -->
+      <div class="pt-2">
+        <button type="submit" class="btn-3d btn-primary w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 cursor-pointer border-none">
+          <span>✨</span>
+          <span>Analyze & Save Article</span>
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- ================= POP-UP XỬ LÝ (LOADING MODAL) ================= -->
+  <div id="loadingModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border-4 border-pink-200">
+      <div class="text-6xl mb-4 animate-bounce-cute inline-block">📖✨</div>
+      <h3 class="font-bubble text-2xl text-pink-500 font-bold mb-2">Processing Article...</h3>
+      <p class="text-sm text-gray-500 font-bold">Evaluating vocabulary and setting up your reading material...</p>
+    </div>
+  </div>
+
+  <!-- ================= POP-UP CHÚC MỪNG & KẾT QUẢ (SUCCESS MODAL) ================= -->
+  <div id="successModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border-4 border-green-200 relative">
+      
+      <div class="text-5xl mb-2">🎉</div>
+      <h3 class="font-bubble text-3xl text-green-500 font-extrabold mb-1">Awesome! Article Added!</h3>
+      <p class="text-xs text-gray-400 font-bold mb-4">Your article is successfully stored in your library.</p>
+
+      <!-- Kết quả Phân Loại Level -->
+      <div class="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-pink-200 rounded-2xl p-4 mb-4">
+        <span class="text-xs font-black text-pink-400 uppercase tracking-widest block mb-1">Estimated Vocabulary Level</span>
+        <div id="levelBadge" class="inline-block px-4 py-1.5 rounded-full font-bubble text-2xl font-black text-white bg-pink-400 shadow-sm">
+          Level: B1
+        </div>
+      </div>
+
+      <!-- Dòng Lưu Ý Nhỏ về Hệ Thống -->
+      <p class="text-xs italic text-gray-400 mb-6 bg-gray-50 p-3 rounded-xl text-left border border-gray-100">
+        💡 <strong class="not-italic text-gray-500">Note:</strong> This level classification is calculated automatically by the system for reference only to help you organize your reading easily.
+      </p>
+
+      <!-- 2 Nút Bấm Chuyển Hướng -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href="mylibrary.html" class="btn-3d bg-emerald-400 text-white py-3 px-4 rounded-xl font-extrabold text-sm no-underline inline-block" style="--shadow-color: #2BB673;">
+          📚 Go to My Library
+        </a>
+        <button onclick="resetForm()" class="btn-3d bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-extrabold text-sm border-none cursor-pointer" style="--shadow-color: #CBD5E1;">
+          ➕ Add Another
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JS CHÍNH XỬ LÝ LOGIC -->
+  <script>
+    // Hàm Thuật Toán Giả Định Phân Loại Level Dựa Trên Độ Dài Từ Vựng Trong Bài
+    function analyzeLevel(text) {
+      const words = text.toLowerCase().match(/\b[a-z]+\b/g) || [];
+      if (words.length === 0) return 'A1';
+
+      let totalCharLength = 0;
+      let longWordsCount = 0;
+
+      words.forEach(w => {
+        totalCharLength += w.length;
+        if (w.length >= 7) longWordsCount++;
+      });
+
+      const avgLength = totalCharLength / words.length;
+      const longWordRatio = longWordsCount / words.length;
+
+      if (avgLength > 5.8 || longWordRatio > 0.22) return 'C1 - C2 (Advanced)';
+      if (avgLength > 5.0 || longWordRatio > 0.15) return 'B2 (Upper-Intermediate)';
+      if (avgLength > 4.4 || longWordRatio > 0.09) return 'B1 (Intermediate)';
+      if (avgLength > 3.8) return 'A2 (Elementary)';
+      return 'A1 (Beginner)';
+    }
+
+    // Xử lý khi Submit Form
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('articleTitle').value.trim();
+      const author = document.getElementById('articleAuthor').value.trim() || 'Unknown Author';
+      const source = document.getElementById('articleSource').value.trim() || 'Personal Source';
+      const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
+      const content = document.getElementById('articleContent').value.trim();
+
+      // Hiện Pop-up Loading
+      document.getElementById('loadingModal').classList.remove('hidden');
+
+      setTimeout(() => {
+        // Tính toán Trình độ
+        const level = analyzeLevel(content);
+
+        // Tạo đối tượng Bài Đọc
+        const newArticle = {
+          id: Date.now(),
+          title: title,
+          author: author,
+          source: source,
+          date: date,
+          content: content,
+          level: level,
+          savedAt: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+        };
+
+        // Lưu vào LocalStorage của Trình Duyệt
+        let existingArticles = JSON.parse(localStorage.getItem('readingland_articles')) || [];
+        existingArticles.unshift(newArticle);
+        localStorage.setItem('readingland_articles', JSON.stringify(existingArticles));
+
+        // Ẩn Loading, Hiện Modal Chúc Mừng
+        document.getElementById('loadingModal').classList.add('hidden');
+        document.getElementById('levelBadge').innerText = `Level: ${level}`;
+        document.getElementById('successModal').classList.remove('hidden');
+
+      }, 1500); // Giả lập chờ 1.5s tạo hiệu ứng xử lý đẹp mắt
+    }
+
+    // Hàm Reset Form để nhập bài mới
+    function resetForm() {
+      document.getElementById('articleForm').reset();
+      document.getElementById('successModal').classList.add('hidden');
+    }
+  </script>
+
+</body>
+</html>
