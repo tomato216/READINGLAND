@@ -38,7 +38,6 @@
     }
 
     .btn-primary { background-color: #FF7B9C; color: #FFFFFF; --shadow-color: #E05275; }
-    .btn-secondary { background-color: #A8E6CF; color: #24523E; --shadow-color: #62B897; }
     .btn-purple { background-color: #BDB2FF; color: #3C2A80; --shadow-color: #8C7CFF; }
     .btn-guest { background-color: #E2E8F0; color: #475569; --shadow-color: #CBD5E1; }
 
@@ -59,9 +58,8 @@
       <h1 class="font-bubble text-3xl font-black text-pink-400 tracking-wide">READINGLAND</h1>
     </div>
     
-    <!-- User Status Header -->
     <div id="userHeaderArea" class="flex items-center gap-3">
-      <!-- Tự động cập nhật bằng JS -->
+      <!-- Cập nhật tự động bằng JS -->
     </div>
   </header>
 
@@ -80,7 +78,6 @@
         READINGLAND giúp bạn lưu trữ bài đọc, tự động phân tích tỷ lệ từ vựng chuẩn CEFR (<strong class="text-emerald-500">A1</strong> đến <strong class="text-rose-500">C2</strong>) và chia sẻ bài đọc hữu ích với cộng đồng!
       </p>
 
-      <!-- Các tính năng nổi bật -->
       <div class="grid grid-cols-2 gap-3 pt-2 text-left">
         <div class="bg-white/80 backdrop-blur-sm p-3 rounded-2xl border-2 border-pink-100 shadow-sm flex items-center gap-2">
           <span class="text-2xl">📊</span>
@@ -99,20 +96,20 @@
       <!-- Khối khi CHƯA đăng nhập -->
       <div id="authBox">
         
-        <!-- Tab Chọn Phương Thức: Email / Guest -->
+        <!-- Tab Chọn Phương Thức -->
         <div class="grid grid-cols-2 gap-1 bg-pink-50 p-1 rounded-2xl mb-5">
           <button id="tabEmail" onclick="switchMethod('email')" class="py-2.5 rounded-xl font-extrabold text-xs transition-all text-pink-600 bg-white shadow-sm">✉️ Email Account</button>
           <button id="tabGuest" onclick="switchMethod('guest')" class="py-2.5 rounded-xl font-extrabold text-xs transition-all text-gray-500">👤 Guest Mode</button>
         </div>
 
-        <!-- PHƯƠNG THỨC 1: EMAIL (Đăng nhập / Đăng ký) -->
+        <!-- PHƯƠNG THỨC 1: EMAIL -->
         <div id="methodEmail">
           <div class="flex border-b border-gray-100 pb-2 mb-4">
             <button id="subTabLogin" onclick="switchEmailSubTab('login')" class="flex-1 text-xs font-black text-pink-500 border-b-2 border-pink-500 pb-1.5">Login</button>
             <button id="subTabReg" onclick="switchEmailSubTab('register')" class="flex-1 text-xs font-black text-gray-400 pb-1.5">Sign Up</button>
           </div>
 
-          <!-- Form Email Login -->
+          <!-- Form Login -->
           <form id="emailLoginForm" onsubmit="handleEmailLogin(event)" class="space-y-3">
             <div>
               <label class="block text-xs font-extrabold text-gray-600 mb-1">Email Address</label>
@@ -127,7 +124,7 @@
             </button>
           </form>
 
-          <!-- Form Email Register -->
+          <!-- Form Register -->
           <form id="emailRegForm" onsubmit="handleEmailRegister(event)" class="space-y-3 hidden">
             <div>
               <label class="block text-xs font-extrabold text-gray-600 mb-1">Your Nickname</label>
@@ -147,7 +144,7 @@
           </form>
         </div>
 
-        <!-- PHƯƠNG THỨC 2: ẨN DANH (GUEST MODE) -->
+        <!-- PHƯƠNG THỨC 2: GUEST MODE -->
         <div id="methodGuest" class="hidden text-center space-y-4 py-2">
           <div class="text-5xl">🕵️‍♂️</div>
           <p class="text-xs text-gray-500 font-bold leading-relaxed px-2">
@@ -164,7 +161,7 @@
 
       </div>
 
-      <!-- Khối khi ĐÃ đăng nhập thành công -->
+      <!-- Khối khi ĐÃ đăng nhập -->
       <div id="loggedInBox" class="hidden text-center space-y-5 py-4">
         <div class="text-6xl animate-float inline-block">🌟</div>
         <div>
@@ -172,12 +169,9 @@
           <p id="userNameDisplay" class="font-bubble text-3xl text-pink-500 font-black mt-1">Learner</p>
         </div>
         
-        <div class="space-y-3 pt-2">
-          <a href="mylibrary.html" class="btn-3d btn-secondary w-full py-3.5 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 no-underline block">
-            📚 Vào Thư Viện Bài Đọc
-          </a>
-          <a href="addnewarticle.html" class="btn-3d btn-primary w-full py-3.5 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 no-underline block">
-            ✍️ Thêm Bài Đọc Mới
+        <div class="pt-2">
+          <a href="dashboard.html" class="btn-3d btn-primary w-full py-4 px-4 rounded-2xl font-extrabold text-lg flex items-center justify-center gap-2 no-underline block">
+            🚀 Vào Dashboard
           </a>
         </div>
       </div>
@@ -205,29 +199,31 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Theo dõi trạng thái Đăng nhập
     auth.onAuthStateChanged((user) => {
+      const authBox = document.getElementById('authBox');
+      const loggedInBox = document.getElementById('loggedInBox');
+
       if (user) {
-        document.getElementById('authBox').classList.add('hidden');
-        document.getElementById('loggedInBox').classList.remove('hidden');
+        if (authBox) authBox.classList.add('hidden');
+        if (loggedInBox) loggedInBox.classList.remove('hidden');
         
         let displayName = user.displayName || user.email?.split('@')[0] || "Anonymous Guest";
-        document.getElementById('userNameDisplay').innerText = displayName;
+        const userDisplay = document.getElementById('userNameDisplay');
+        if (userDisplay) userDisplay.innerText = displayName;
 
         document.getElementById('userHeaderArea').innerHTML = `
           <span class="text-xs font-black text-gray-600 bg-pink-100 px-3 py-1.5 rounded-full">👤 ${displayName}</span>
           <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">Logout</button>
         `;
       } else {
-        document.getElementById('authBox').classList.remove('hidden');
-        document.getElementById('loggedInBox').classList.add('hidden');
+        if (authBox) authBox.classList.remove('hidden');
+        if (loggedInBox) loggedInBox.classList.add('hidden');
         document.getElementById('userHeaderArea').innerHTML = `
           <span class="text-xs font-extrabold text-gray-400">Guest Mode</span>
         `;
       }
     });
 
-    // Chuyển giữa Email & Guest
     function switchMethod(method) {
       document.getElementById('methodEmail').classList.add('hidden');
       document.getElementById('methodGuest').classList.add('hidden');
@@ -244,7 +240,6 @@
       }
     }
 
-    // Chuyển Login / Register cho Email
     function switchEmailSubTab(sub) {
       if (sub === 'login') {
         document.getElementById('emailLoginForm').classList.remove('hidden');
@@ -259,7 +254,6 @@
       }
     }
 
-    // Xử lý Đăng nhập Email
     async function handleEmailLogin(e) {
       e.preventDefault();
       try {
@@ -270,7 +264,6 @@
       } catch (err) { alert("Lỗi đăng nhập: " + err.message); }
     }
 
-    // Xử lý Đăng ký Email
     async function handleEmailRegister(e) {
       e.preventDefault();
       const name = document.getElementById('regName').value.trim();
@@ -284,7 +277,6 @@
       } catch (err) { alert("Lỗi đăng ký: " + err.message); }
     }
 
-    // Xử lý Đăng nhập Guest
     async function handleGuestLogin() {
       const name = document.getElementById('guestName').value.trim() || "Guest Learner";
       try {
@@ -293,7 +285,6 @@
       } catch (err) { alert("Lỗi đăng nhập ẩn danh: " + err.message); }
     }
 
-    // Đăng xuất
     function handleLogout() {
       auth.signOut();
     }
