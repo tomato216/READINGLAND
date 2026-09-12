@@ -151,8 +151,8 @@
   <div id="loadingModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border-4 border-pink-200">
       <div class="text-6xl mb-4 animate-bounce-cute inline-block">📖✨</div>
-      <h3 class="font-bubble text-2xl text-pink-500 font-bold mb-2">Analyzing & Saving...</h3>
-      <p class="text-sm text-gray-500 font-bold">Processing CEFR levels (A1-C2) & syncing data...</p>
+      <h3 class="font-bubble text-2xl text-pink-500 font-bold mb-2">Analyzing & Translating...</h3>
+      <p id="loadingStatusText" class="text-sm text-gray-500 font-bold">Auto-translating paragraphs to Vietnamese & analyzing CEFR...</p>
     </div>
   </div>
 
@@ -227,7 +227,7 @@
 
       <!-- Nút Chuyển Hướng -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <a href="mylibrary.html" class="btn-3d bg-emerald-400 text-white py-3 px-4 rounded-xl font-extrabold text-sm no-underline inline-block" style="--shadow-color: #2BB673;">
+        <a id="targetLibraryBtn" href="communitylibrary.html" class="btn-3d bg-emerald-400 text-white py-3 px-4 rounded-xl font-extrabold text-sm no-underline inline-block" style="--shadow-color: #2BB673;">
           📚 Go to Library
         </a>
         <button onclick="resetForm()" class="btn-3d bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-extrabold text-sm border-none cursor-pointer" style="--shadow-color: #CBD5E1;">
@@ -240,7 +240,6 @@
 
   <!-- FIREBASE CONFIG & ANALYTICS SCRIPT -->
   <script>
-    // Cấu hình Firebase của bạn
     const firebaseConfig = {
       apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
       authDomain: "readingland-bccc1.firebaseapp.com",
@@ -261,9 +260,22 @@
       b2: new Set(['abandon','abnormal','abolish','abolition','abortion','abrupt','abruptly','absence','absent','absolute','absolutely','absorb','abstract','absurd','abundance','abundant','abuse','academic','accelerate','accent','acceptable','acceptance','access','accessible','accessory','accident','accidental','accommodate','accommodation','accompaniment','accomplish','accomplishment','accordance','accordingly','accountability','accountable','accumulate','accumulation','accuracy','accusation','accuse','accused','accustom','achievable','acidic','acknowledge','acknowledgment','acquaintance','acquire','acquisition','acre','acrobat','across','activate','activation','activist','actress','actual','actuality','acupuncture','acute','adaptability','adaptation','addict','addicted','addition','additionally','additive','address','adequacy','adhere','adherence','adjacent','adjoin','adjourn','adjust','adjustment','administer','administrative','administrator','admirable','admiration','admire','admission','admit','admittedly','adolescence','adolescent','adopt','adoption','adoration','adore','adorn','adrenalin','adrift','adult','adulthood','advance','advancement','advantageous','adventurous','adversary','adverse','adversity','advert','advertise','advertiser','advertising','advisable','advocacy','advocate','aesthetic','affable','affair','affect','affection','affectionate','affidavit','affiliate','affiliation','affinity','affirm','affirmation','affirmative','afflict','affluence','affluent','affordability','affordable','afforestation','affront','afloat','aforementioned','afraid','aftermath','afterward','against','ageless','agenda','agent','aggravate','aggravation','aggregate','aggression','aggressive','aggressor','aggrieved','agile','agility','aging','agitate','agitation','agony','agreeable','agreeably','agreement','agricultural','agriculture','agronomy','ahead','aid','ailment','aimless','airborne','aircraft','airfield','airless','airline','airliner','airlock','airmail','airplane','airport','airship','airstream','airstip','airtight','airwave','airway','airworthiness','airworthy','airy','aisle','ajar','alarmist','albumen','alchemy','alchemist','alcoholism','alcove','alderman','alertness','alias','alibi','alienate','alienation','alignment','alike','alimentary','alimony','alive','alkali','alkaline','allay','allegation','allege','allegedly','allegiance','allegorical','allegory','allergic','allergy','alleviate','alleviation','alley','alliance','alligator','alliteration','allocate','allocation','allot','allotment','allowable','allowance','alloy','allude','allure','alluring','allusion','ally','almanac','almighty','almond','almost','alms','aloft','alone','aloof','aloofness','aloud','alphabetical','alphabetically','alpine','already','alteration','altercate','altercation','alternate','alternately','alternation','alternative','altitude','altruism','altruistic','aluminum','alumna','alumnus','amalgamate','amalgamation','amass','amateurish','amaze','amazement','amazing','amazingly','ambassador','ambassadorial','amber','ambience','ambient','ambiguity','ambiguous','ambition','ambitious','ambivalence','ambivalent','amble','ambulance','ambush','ameliorate','amelioration','amenable','amend','amendment','amenity','americium','amiable','amiably','amicable','amicably','amid','amidships','amiss','ammonia','ammunition','amnesia','amnesiac','amnesty','amoeba','amok','amongst','amorphous','amortize','amortization','amount','amperage','ampere','ampersand','amphibian','amphibious','amphitheater','ample','amplification','amplifier','amplify','amplitude','sustainability','biodiversity','algorithm','infrastructure'])
     };
 
+    // Hàm gọi API dịch văn bản tự động sang Tiếng Việt
+    async function translateToVietnamese(text) {
+      if (!text || text.trim() === '') return '';
+      try {
+        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|vi`);
+        const data = await res.json();
+        return data.responseData ? data.responseData.translatedText : '';
+      } catch (err) {
+        console.warn("Lỗi dịch tự động:", err);
+        return '';
+      }
+    }
+
     function analyzeCEFRPercentages(text) {
       const words = text.toLowerCase().match(/\b[a-z]+\b/g) || [];
-      if (words.length === 0) return { A1: 100, A2: 0, B1: 0, B2: 0, C1: 0, overall: 'A1 (Beginner)' };
+      if (words.length === 0) return { A1: 100, A2: 0, B1: 0, B2: 0, C1: 0, overall: 'A1 (Beginner)', shortLevel: 'A1-A2' };
 
       let counts = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0 };
       let total = words.length;
@@ -286,12 +298,23 @@
       };
 
       let overall = 'A1 (Beginner)';
-      if (pct.C1 >= 12 || pct.B2 >= 20) overall = 'C1/C2 (Advanced)';
-      else if (pct.B2 >= 10 || pct.B1 >= 25) overall = 'B2 (Upper-Intermediate)';
-      else if (pct.B1 >= 12 || pct.A2 >= 30) overall = 'B1 (Intermediate)';
-      else if (pct.A2 >= 15) overall = 'A2 (Elementary)';
+      let shortLevel = 'A1-A2';
+      
+      if (pct.C1 >= 12 || pct.B2 >= 20) {
+        overall = 'C1/C2 (Advanced)';
+        shortLevel = 'C1-C2';
+      } else if (pct.B2 >= 10 || pct.B1 >= 25) {
+        overall = 'B2 (Upper-Intermediate)';
+        shortLevel = 'B1-B2';
+      } else if (pct.B1 >= 12 || pct.A2 >= 30) {
+        overall = 'B1 (Intermediate)';
+        shortLevel = 'B1-B2';
+      } else if (pct.A2 >= 15) {
+        overall = 'A2 (Elementary)';
+        shortLevel = 'A1-A2';
+      }
 
-      return { ...pct, overall };
+      return { ...pct, overall, shortLevel };
     }
 
     async function handleFormSubmit(event) {
@@ -304,38 +327,63 @@
       const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
       const content = document.getElementById('articleContent').value.trim();
 
+      // Mở Modal Loading
       document.getElementById('loadingModal').classList.remove('hidden');
 
+      // 1. Phân tích chỉ số % CEFR
       const result = analyzeCEFRPercentages(content);
 
+      // 2. Chia nhỏ văn bản thành các đoạn và tự động dịch từng đoạn sang Tiếng Việt
+      const rawParagraphs = content.split(/\n\s*\n/).filter(p => p.trim() !== '');
+      
+      let paragraphs = [];
+      for (let pEn of rawParagraphs) {
+        let pVi = await translateToVietnamese(pEn.trim());
+        paragraphs.push({
+          en: pEn.trim(),
+          vi: pVi || ""
+        });
+      }
+
+      // Tạo đối tượng lưu trữ hoàn chỉnh
       const newArticle = {
         title: title,
         author: author,
+        authorName: author,
         source: source,
         date: date,
         content: content,
+        paragraphs: paragraphs,
+        cefrLevel: result.shortLevel,
         level: result.overall,
         breakdown: result,
         visibility: visibility,
+        isPublic: visibility === 'public',
+        topic: 'General',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
         if (visibility === 'public') {
-          // Lưu lên Cloud Firebase
+          // Lưu lên Cloud Firebase (cả 2 collection 'articles' & 'public_articles' để tương thích)
+          await db.collection('articles').add(newArticle);
           await db.collection('public_articles').add(newArticle);
+
           document.getElementById('saveModeTag').innerText = "🌐 Published to Public Library";
           document.getElementById('saveModeTag').className = "text-xs font-black text-purple-600 bg-purple-100 inline-block px-3 py-1 rounded-full mb-4";
+          document.getElementById('targetLibraryBtn').href = "communitylibrary.html";
         } else {
           // Lưu riêng tư LocalStorage
           let privateArticles = JSON.parse(localStorage.getItem('readingland_private_articles')) || [];
           privateArticles.unshift({ ...newArticle, id: Date.now() });
           localStorage.setItem('readingland_private_articles', JSON.stringify(privateArticles));
+
           document.getElementById('saveModeTag').innerText = "🔒 Saved to Private Library";
           document.getElementById('saveModeTag').className = "text-xs font-black text-gray-600 bg-gray-100 inline-block px-3 py-1 rounded-full mb-4";
+          document.getElementById('targetLibraryBtn').href = "mylibrary.html";
         }
 
-        // Cập nhật Pop-up
+        // Cập nhật giao diện Pop-up Kết quả
         document.getElementById('loadingModal').classList.add('hidden');
         document.getElementById('overallLevelBadge').innerText = result.overall;
 
