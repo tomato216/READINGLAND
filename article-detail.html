@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>READINGLAND - Reader</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #FFF5F5 0%, #EBF8FF 50%, #F0FFF4 100%);
+    }
+    .font-bubble { font-family: 'Fredoka', cursive; }
+
+    /* Clickable interactive words */
+    .interactive-word {
+      cursor: pointer;
+      display: inline-block;
+      padding: 0 2px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .interactive-word:hover {
+      background-color: #FCE7F3;
+      color: #DB2777;
+      font-weight: 800;
+    }
+
+    /* Capsule Button Style */
+    .capsule-btn {
+      transition: all 0.2s ease;
+      box-shadow: 0px 4px 0px #CBD5E1;
+    }
+    .capsule-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0px 1px 0px #CBD5E1;
+    }
+    .capsule-btn-saved {
+      background-color: #10B981 !important;
+      color: white !important;
+      box-shadow: 0px 4px 0px #047857 !important;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between p-4 sm:p-8 text-gray-700">
+
+  <!-- Header -->
+  <header class="w-full max-w-6xl mx-auto flex items-center justify-between py-4 border-b-2 border-pink-100 mb-6">
+    <a href="communitylibrary.html" class="flex items-center gap-2 text-xs font-black text-pink-500 bg-pink-100 px-4 py-2 rounded-2xl hover:bg-pink-200 transition-all no-underline">
+      <span>⬅ Back to Library</span>
+    </a>
+    <h1 class="font-bubble text-2xl font-black text-pink-400">READINGLAND</h1>
+  </header>
+
+  <!-- Main Article & Dictionary Container -->
+  <main class="w-full max-w-6xl mx-auto my-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Left Column: Article Content (2 cols on large screen) -->
+    <div class="lg:col-span-2 space-y-6">
+      
+      <!-- Article Top Controls -->
+      <div class="bg-white/80 p-6 rounded-3xl border-2 border-pink-100 shadow-sm space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+          <span id="articleTopic" class="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-black uppercase tracking-wider">Topic</span>
+          <div class="flex items-center gap-3">
+            <span id="articleCefr" class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-wider">CEFR B1</span>
+            
+            <!-- Bilingual Toggle Switch -->
+            <label class="flex items-center gap-2 cursor-pointer bg-pink-50 px-3 py-1.5 rounded-full border border-pink-200">
+              <span class="text-xs font-extrabold text-gray-700">Bilingual</span>
+              <input type="checkbox" id="bilingualToggle" onchange="toggleBilingualMode()" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-pink-500 relative"></div>
+            </label>
+          </div>
+        </div>
+
+        <h1 id="articleTitle" class="font-bubble text-3xl sm:text-4xl font-black text-gray-800 leading-snug">
+          Loading Article...
+        </h1>
+
+        <div class="flex items-center gap-2 text-xs font-bold text-gray-400">
+          <span id="articleAuthor">By Author</span>
+          <span>•</span>
+          <span id="articleSource">Source: Original</span>
+        </div>
+      </div>
+
+      <!-- Article Body (Clickable Words) -->
+      <div class="bg-white/90 p-6 sm:p-8 rounded-3xl border-2 border-pink-100 shadow-sm space-y-6 text-base sm:text-lg font-semibold leading-relaxed text-gray-700" id="articleBody">
+        <!-- Processed article text will appear here -->
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Vocab Sidebar / Drawer -->
+    <div class="lg:col-span-1">
+      <div class="bg-white p-6 rounded-3xl border-4 border-pink-100 shadow-xl sticky top-8 space-y-5">
+        
+        <div class="flex items-center justify-between border-b-2 border-pink-50 pb-3">
+          <h3 class="font-bubble text-xl font-black text-gray-800 flex items-center gap-2">
+            <span>📖</span> Dictionary Helper
+          </h3>
+          <span class="text-[10px] font-black text-pink-400 uppercase tracking-widest">Click any word</span>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="vocabPlaceholder" class="text-center py-12 space-y-3">
+          <div class="text-5xl">👉</div>
+          <p class="text-xs font-bold text-gray-400 leading-relaxed px-4">
+            Click on any word inside the article text to inspect its meaning, pronunciation, and examples!
+          </p>
+        </div>
+
+        <!-- Word Detail Inspector Area -->
+        <div id="vocabInspector" class="hidden space-y-4">
+          
+          <!-- Word Header & Capsule Save Button -->
+          <div class="flex items-start justify-between gap-2 border-b border-gray-100 pb-3">
+            <div>
+              <h2 id="inspWord" class="font-bubble text-3xl font-black text-pink-500">Word</h2>
+              <p id="inspIpa" class="text-xs font-mono font-bold text-gray-400">/phonetics/</p>
+            </div>
+            
+            <!-- Capsule Button -->
+            <button id="saveCapsuleBtn" onclick="saveToNotebook()" class="capsule-btn bg-pink-100 text-pink-600 px-4 py-2 rounded-full font-black text-xs border-none cursor-pointer flex items-center gap-1.5">
+              <span>💊</span> <span id="capsuleBtnText">Save Word</span>
+            </button>
+          </div>
+
+          <!-- Vietnamese Translation (Crucial for learning) -->
+          <div class="bg-pink-50/60 p-3.5 rounded-2xl border border-pink-100">
+            <span class="text-[10px] font-black text-pink-400 uppercase tracking-wider block mb-1">Nghĩa Tiếng Việt:</span>
+            <p id="inspVietnamese" class="font-black text-gray-800 text-base">Nghĩa từ vựng</p>
+          </div>
+
+          <!-- English Definition -->
+          <div>
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-wider block mb-1">English Definition:</span>
+            <p id="inspEnglishDef" class="text-xs font-bold text-gray-600 leading-relaxed">English definition here.</p>
+          </div>
+
+          <!-- Example Sentence -->
+          <div class="bg-blue-50/50 p-3.5 rounded-2xl border border-blue-100 space-y-1">
+            <span class="text-[10px] font-black text-blue-400 uppercase tracking-wider block">Example Sentence:</span>
+            <p id="inspExampleEn" class="text-xs font-extrabold text-gray-700 italic">"English example sentence goes here."</p>
+            <p id="inspExampleVi" class="text-xs font-bold text-gray-500">"Ví dụ dịch tiếng Việt."</p>
+          </div>
+
+          <!-- Synonyms & Antonyms -->
+          <div class="grid grid-cols-2 gap-2 pt-1 text-xs">
+            <div class="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
+              <span class="text-[10px] font-black text-emerald-600 uppercase tracking-wider block mb-1">Synonyms:</span>
+              <p id="inspSynonyms" class="font-bold text-gray-700">N/A</p>
+            </div>
+            <div class="bg-rose-50/50 p-2.5 rounded-xl border border-rose-100">
+              <span class="text-[10px] font-black text-rose-600 uppercase tracking-wider block mb-1">Antonyms:</span>
+              <p id="inspAntonyms" class="font-bold text-gray-700">N/A</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-6xl mx-auto text-center py-4 border-t-2 border-pink-100 mt-8 text-xs text-gray-400 font-bold">
+    READINGLAND © 2026 - Designed for English Learners Worldwide 🌍
+  </footer>
+
+  <!-- SCRIPT FIREBASE & DICTIONARY LOGIC -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
+      authDomain: "readingland-bccc1.firebaseapp.com",
+      projectId: "readingland-bccc1",
+      storageBucket: "readingland-bccc1.firebasestorage.app",
+      messagingSenderId: "941153833738",
+      appId: "1:941153833738:web:0628eb2998541913ae20f3",
+      measurementId: "G-DZZGN7R0PR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let articleData = null;
+    let selectedWordObject = null;
+
+    // Get Article ID from URL Query String (?id=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('id');
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        currentUser = user;
+        if (articleId) {
+          loadArticle(articleId);
+        } else {
+          alert("No article selected!");
+          window.location.href = "communitylibrary.html";
+        }
+      } else {
+        window.location.replace("index.html");
+      }
+    });
+
+    async function loadArticle(id) {
+      try {
+        const doc = await db.collection('articles').doc(id).get();
+        if (!doc.exists) {
+          alert("Article not found!");
+          window.location.href = "communitylibrary.html";
+          return;
+        }
+
+        articleData = doc.data();
+        renderArticleDetails();
+      } catch (err) {
+        console.error("Error loading article:", err);
+      }
+    }
+
+    function renderArticleDetails() {
+      document.getElementById('articleTitle').innerText = articleData.title || "Untitled";
+      document.getElementById('articleTopic').innerText = articleData.topic || "General";
+      document.getElementById('articleCefr').innerText = `CEFR ${articleData.cefrLevel || 'B1'}`;
+      document.getElementById('articleAuthor').innerText = `By ${articleData.authorName || 'Anonymous'}`;
+      document.getElementById('articleSource').innerText = `Source: ${articleData.source || 'Original'}`;
+
+      renderParagraphs();
+    }
+
+    function renderParagraphs() {
+      const bodyContainer = document.getElementById('articleBody');
+      const isBilingual = document.getElementById('bilingualToggle').checked;
+      bodyContainer.innerHTML = '';
+
+      // Paragraphs array stored in Firestore
+      const paragraphs = articleData.paragraphs || [
+        { en: articleData.content || "", vi: articleData.contentVi || "" }
+      ];
+
+      paragraphs.forEach(para => {
+        const paraBox = document.createElement('div');
+        paraBox.className = "space-y-2 border-b border-pink-50 pb-4 last:border-none";
+
+        // English paragraph with clickable words
+        const enPara = document.createElement('p');
+        enPara.className = "text-gray-800 leading-relaxed";
+        
+        // Split words and wrap in clickable spans
+        const words = para.en.split(' ');
+        words.forEach(word => {
+          const cleanWord = word.replace(/[^a-zA-Z]/g, '');
+          const span = document.createElement('span');
+          span.className = "interactive-word";
+          span.innerText = word + ' ';
+          if (cleanWord) {
+            span.onclick = () => inspectWord(cleanWord);
+          }
+          enPara.appendChild(span);
+        });
+
+        paraBox.appendChild(enPara);
+
+        // Vietnamese translation line (Controlled by toggle)
+        if (isBilingual && para.vi) {
+          const viPara = document.createElement('p');
+          viPara.className = "text-sm text-pink-600 font-extrabold bg-pink-50/50 p-3 rounded-2xl border border-pink-100/60";
+          viPara.innerText = para.vi;
+          paraBox.appendChild(viPara);
+        }
+
+        bodyContainer.appendChild(paraBox);
+      });
+    }
+
+    function toggleBilingualMode() {
+      renderParagraphs();
+    }
+
+    // Interactive Word Inspection (Simulated API lookup with rich dictionary data)
+    function inspectWord(word) {
+      document.getElementById('vocabPlaceholder').classList.add('hidden');
+      document.getElementById('vocabInspector').classList.remove('hidden');
+
+      // Reset Capsule Button state
+      const capsuleBtn = document.getElementById('saveCapsuleBtn');
+      capsuleBtn.className = "capsule-btn bg-pink-100 text-pink-600 px-4 py-2 rounded-full font-black text-xs border-none cursor-pointer flex items-center gap-1.5";
+      document.getElementById('capsuleBtnText').innerText = "Save Word";
+
+      // Mock dictionary object (In production, replace with Free Dictionary API or OpenAI API)
+      selectedWordObject = {
+        word: word,
+        ipa: `/${word.toLowerCase()}/`,
+        vietnamese: `Nghĩa tiếng Việt của từ "${word}"`,
+        englishDef: `A key vocabulary word in English related to the context of ${articleData.topic || 'the passage'}.`,
+        exampleEn: `The study emphasized the role of ${word} in modern context.`,
+        exampleVi: `Nghiên cứu nhấn mạnh vai trò của ${word} trong bối cảnh hiện đại.`,
+        synonyms: "concept, term",
+        antonyms: "N/A"
+      };
+
+      document.getElementById('inspWord').innerText = selectedWordObject.word;
+      document.getElementById('inspIpa').innerText = selectedWordObject.ipa;
+      document.getElementById('inspVietnamese').innerText = selectedWordObject.vietnamese;
+      document.getElementById('inspEnglishDef').innerText = selectedWordObject.englishDef;
+      document.getElementById('inspExampleEn').innerText = `"${selectedWordObject.exampleEn}"`;
+      document.getElementById('inspExampleVi').innerText = `"${selectedWordObject.exampleVi}"`;
+      document.getElementById('inspSynonyms').innerText = selectedWordObject.synonyms;
+      document.getElementById('inspAntonyms').innerText = selectedWordObject.antonyms;
+    }
+
+    // Save word into Firestore Vocab Notebook
+    async function saveToNotebook() {
+      if (!selectedWordObject || !currentUser) return;
+
+      try {
+        await db.collection('vocabularies').add({
+          userId: currentUser.uid,
+          word: selectedWordObject.word,
+          ipa: selectedWordObject.ipa,
+          vietnamese: selectedWordObject.vietnamese,
+          englishDef: selectedWordObject.englishDef,
+          exampleEn: selectedWordObject.exampleEn,
+          exampleVi: selectedWordObject.exampleVi,
+          savedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // UI Feedback: Turn Capsule button Green
+        const capsuleBtn = document.getElementById('saveCapsuleBtn');
+        capsuleBtn.className = "capsule-btn capsule-btn-saved px-4 py-2 rounded-full font-black text-xs border-none cursor-pointer flex items-center gap-1.5";
+        document.getElementById('capsuleBtnText').innerText = "Saved!";
+      } catch (err) {
+        alert("Error saving word: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
