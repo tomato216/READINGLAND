@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>READINGLAND - Dashboard</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #FFF5F5 0%, #EBF8FF 50%, #F0FFF4 100%);
+    }
+    .font-bubble { font-family: 'Fredoka', cursive; }
+
+    /* Hiệu ứng Nút & Thẻ 3D */
+    .card-3d {
+      transition: all 0.2s ease;
+      box-shadow: 0px 8px 0px var(--shadow-color);
+    }
+    .card-3d:hover {
+      transform: translateY(-4px);
+      box-shadow: 0px 12px 0px var(--shadow-color);
+    }
+    .card-3d:active {
+      transform: translateY(2px);
+      box-shadow: 0px 4px 0px var(--shadow-color);
+    }
+
+    .card-pink { background-color: #FFFFFF; border-color: #FFB7C5; --shadow-color: #FFD1DA; }
+    .card-mint { background-color: #FFFFFF; border-color: #A8E6CF; --shadow-color: #C7F3E3; }
+    .card-purple { background-color: #FFFFFF; border-color: #D8B4FE; --shadow-color: #E9D5FF; }
+    .card-yellow { background-color: #FFFFFF; border-color: #FDE047; --shadow-color: #FEF08A; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float { animation: float 3s infinite ease-in-out; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between p-4 sm:p-8 text-gray-700">
+
+  <!-- Header / Navbar -->
+  <header class="w-full max-w-5xl mx-auto flex items-center justify-between py-4 border-b-2 border-pink-100 mb-8">
+    <a href="dashboard.html" class="flex items-center gap-2 no-underline">
+      <span class="text-3xl animate-float">📚</span>
+      <h1 class="font-bubble text-3xl font-black text-pink-400 tracking-wide">READINGLAND</h1>
+    </a>
+    
+    <!-- User Status Header -->
+    <div id="userHeaderArea" class="flex items-center gap-3">
+      <!-- Tự động cập nhật bằng JS -->
+    </div>
+  </header>
+
+  <!-- Main Content: Welcome Banner & Dashboard Grid -->
+  <main class="w-full max-w-5xl mx-auto my-auto space-y-8">
+    
+    <!-- Welcome Banner -->
+    <div class="bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl border-4 border-pink-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center sm:text-left">
+        <span class="px-3 py-1 bg-pink-100 text-pink-500 rounded-full text-xs font-extrabold uppercase tracking-wider">
+          👋 Learning Hub
+        </span>
+        <h2 class="font-bubble text-3xl sm:text-4xl font-black text-gray-800">
+          Ready for today's reading? ✨
+        </h2>
+        <p class="text-gray-500 font-bold text-sm sm:text-base">
+          Chọn một tính năng bên dưới để bắt đầu hành trình luyện đọc Tiếng Anh ngay thôi!
+        </p>
+      </div>
+      <div class="text-6xl animate-float">
+        🌟
+      </div>
+    </div>
+
+    <!-- 4 Ô Tính Năng (Dashboard Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- Ô 1: Thêm bài đọc mới -->
+      <a href="addnewarticle.html" class="card-3d card-pink rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
+        <div class="space-y-3">
+          <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+            ✍️
+          </div>
+          <h3 class="font-bubble text-xl font-extrabold text-pink-500">Thêm Bài Đọc Mới</h3>
+          <p class="text-xs text-gray-500 font-bold leading-relaxed">
+            Dán đoạn văn bản hoặc bài báo bất kỳ để hệ thống phân tích tỷ lệ từ vựng chuẩn CEFR.
+          </p>
+        </div>
+        <div class="flex items-center text-xs font-black text-pink-400 group-hover:translate-x-1 transition-transform">
+          Bắt đầu phân tích ➔
+        </div>
+      </a>
+
+      <!-- Ô 2: Thư viện cộng đồng -->
+      <a href="community.html" class="card-3d card-mint rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
+        <div class="space-y-3">
+          <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+            🌐
+          </div>
+          <h3 class="font-bubble text-xl font-extrabold text-emerald-600">Thư Viện Cộng Đồng</h3>
+          <p class="text-xs text-gray-500 font-bold leading-relaxed">
+            Khám phá các bài đọc phong phú do cộng đồng người học đóng góp và chia sẻ.
+          </p>
+        </div>
+        <div class="flex items-center text-xs font-black text-emerald-500 group-hover:translate-x-1 transition-transform">
+          Khám phá ngay ➔
+        </div>
+      </a>
+
+      <!-- Ô 3: Sổ tay từ vựng -->
+      <a href="vocabulary.html" class="card-3d card-purple rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
+        <div class="space-y-3">
+          <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+            📖
+          </div>
+          <h3 class="font-bubble text-xl font-extrabold text-purple-600">Sổ Tay Từ Vựng</h3>
+          <p class="text-xs text-gray-500 font-bold leading-relaxed">
+            Lưu giữ và ôn tập các từ mới đã lưu trong quá trình đọc bài theo cấp độ CEFR.
+          </p>
+        </div>
+        <div class="flex items-center text-xs font-black text-purple-500 group-hover:translate-x-1 transition-transform">
+          Mở sổ tay ➔
+        </div>
+      </a>
+
+      <!-- Ô 4: Trang cá nhân (Đang phát triển) -->
+      <a href="profile.html" class="card-3d card-yellow rounded-3xl border-4 p-6 flex flex-col justify-between gap-6 no-underline group cursor-pointer">
+        <div class="space-y-3">
+          <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+            👤
+          </div>
+          <div class="flex items-center gap-2">
+            <h3 class="font-bubble text-xl font-extrabold text-amber-600">Trang Cá Nhân</h3>
+            <span class="text-[10px] font-black bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Soon</span>
+          </div>
+          <p class="text-xs text-gray-400 font-bold leading-relaxed">
+            Xem tiến độ học tập, thống kê bài đọc đã hoàn thành và quản lý thông tin tài khoản.
+          </p>
+        </div>
+        <div class="flex items-center text-xs font-black text-amber-500 group-hover:translate-x-1 transition-transform">
+          Xem thông tin ➔
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-5xl mx-auto text-center py-4 border-t-2 border-pink-100 mt-8 text-xs text-gray-400 font-bold">
+    READINGLAND © 2026 - Designed for English Learners Worldwide 🌍
+  </footer>
+
+  <!-- Firebase Script -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
+      authDomain: "readingland-bccc1.firebaseapp.com",
+      projectId: "readingland-bccc1",
+      storageBucket: "readingland-bccc1.firebasestorage.app",
+      messagingSenderId: "941153833738",
+      appId: "1:941153833738:web:0628eb2998541913ae20f3",
+      measurementId: "G-DZZGN7R0PR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Kiểm tra đăng nhập
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        let displayName = user.displayName || user.email?.split('@')[0] || "Learner";
+        document.getElementById('userHeaderArea').innerHTML = `
+          <span class="text-xs font-black text-pink-600 bg-pink-100 px-3.5 py-2 rounded-full border-2 border-pink-200">
+            👤 ${displayName}
+          </span>
+          <button onclick="handleLogout()" class="text-xs font-bold text-gray-400 hover:text-pink-500 underline border-none bg-transparent cursor-pointer">
+            Logout
+          </button>
+        `;
+      } else {
+        // Nếu chưa đăng nhập thì đẩy về trang index
+        window.location.href = "index.html";
+      }
+    });
+
+    function handleLogout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+  </script>
+</body>
+</html>
