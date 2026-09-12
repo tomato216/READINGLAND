@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add New Article - READINGLAND</title>
   
-  <!-- Google Fonts: Fredoka & Nunito -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
@@ -13,15 +13,17 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Firebase SDKs (v9 CDN compatibility) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       font-family: 'Nunito', sans-serif;
       background: linear-gradient(135deg, #FFF5F5 0%, #EBF8FF 50%, #F0FFF4 100%);
     }
-    
     .font-bubble { font-family: 'Fredoka', cursive; }
 
-    /* Hiệu ứng Nút Bấm 3D */
     .btn-3d {
       transition: all 0.15s ease;
       box-shadow: 0px 5px 0px var(--shadow-color);
@@ -47,7 +49,6 @@
       --shadow-color: #62B897;
     }
 
-    /* Hiệu ứng Hoạt hình Nhún Nhảy Pop-up Loading */
     @keyframes bounce-slow {
       0%, 100% { transform: translateY(0) scale(1); }
       50% { transform: translateY(-12px) scale(1.05); }
@@ -60,7 +61,7 @@
 
 <body class="min-h-screen flex flex-col items-center p-4 sm:p-6 text-gray-700 relative">
 
-  <!-- Header Thanh Điều Hướng Trên Cùng -->
+  <!-- Header -->
   <header class="w-full max-w-3xl flex items-center justify-between mb-6 z-10">
     <a href="index.html" class="btn-3d btn-home py-2 px-4 rounded-xl font-extrabold text-sm flex items-center gap-2 no-underline">
       <span>🏠</span>
@@ -69,17 +70,39 @@
     <h2 class="font-bubble text-2xl sm:text-3xl font-black text-pink-400">READINGLAND</h2>
   </header>
 
-  <!-- Khung Form Nhập Bài Đọc chính -->
+  <!-- Form chính -->
   <main class="w-full max-w-3xl bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border-4 border-pink-100 z-10 mb-8">
     
     <div class="text-center mb-6">
       <h1 class="font-bubble text-3xl sm:text-4xl text-gray-800 mb-1">Add New Article 📝</h1>
-      <p class="text-sm text-gray-500 font-semibold">Store your favorite English reading materials for later study!</p>
+      <p class="text-sm text-gray-500 font-semibold">Analyze vocabulary levels & publish for yourself or the community!</p>
     </div>
 
     <form id="articleForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
       
-      <!-- Ô Nhập Title (Bắt buộc) -->
+      <!-- Chế độ Riêng tư / Công khai -->
+      <div class="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-2xl border-2 border-pink-200">
+        <label class="block text-xs font-black text-pink-600 uppercase tracking-wider mb-2">
+          Visibility Option <span class="text-pink-500">*</span>
+        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center gap-2 bg-white p-3 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-pink-300 transition-all">
+            <input type="radio" name="visibility" value="private" checked class="accent-pink-500 w-4 h-4">
+            <div>
+              <div class="text-sm font-extrabold text-gray-700">🔒 Private</div>
+              <div class="text-xs text-gray-400 font-bold">Only on this device</div>
+            </div>
+          </label>
+          <label class="flex items-center gap-2 bg-white p-3 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-purple-300 transition-all">
+            <input type="radio" name="visibility" value="public" class="accent-purple-500 w-4 h-4">
+            <div>
+              <div class="text-sm font-extrabold text-purple-700">🌐 Public Library</div>
+              <div class="text-xs text-gray-400 font-bold">Share with everyone</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
       <div>
         <label class="block text-sm font-extrabold text-gray-700 mb-1">
           Article Title <span class="text-pink-500">*</span>
@@ -88,23 +111,17 @@
                class="w-full px-4 py-3 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none font-bold text-gray-700 bg-pink-50/30 transition-all">
       </div>
 
-      <!-- Khung 3 Ô Phụ (Author, Source, Date) -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <!-- Author -->
         <div>
           <label class="block text-xs font-extrabold text-gray-600 mb-1">Author (Optional)</label>
           <input type="text" id="articleAuthor" placeholder="e.g. John Doe" 
                  class="w-full px-3 py-2.5 rounded-xl border-2 border-blue-100 focus:border-blue-300 focus:outline-none text-sm font-semibold bg-blue-50/20">
         </div>
-
-        <!-- Source -->
         <div>
           <label class="block text-xs font-extrabold text-gray-600 mb-1">Source (Optional)</label>
           <input type="text" id="articleSource" placeholder="e.g. BBC News / Book" 
                  class="w-full px-3 py-2.5 rounded-xl border-2 border-green-100 focus:border-green-300 focus:outline-none text-sm font-semibold bg-green-50/20">
         </div>
-
-        <!-- Date -->
         <div>
           <label class="block text-xs font-extrabold text-gray-600 mb-1">Release Date (Optional)</label>
           <input type="date" id="articleDate" 
@@ -112,61 +129,106 @@
         </div>
       </div>
 
-      <!-- Ô Nhập Nội Dung Bài Đọc (To) -->
       <div>
         <label class="block text-sm font-extrabold text-gray-700 mb-1">
           Content <span class="text-pink-500">*</span>
         </label>
-        <textarea id="articleContent" required rows="10" 
+        <textarea id="articleContent" required rows="9" 
                   placeholder="Paste your article content here..." 
                   class="w-full p-4 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none font-medium italic text-gray-600 bg-pink-50/20 transition-all resize-y"></textarea>
       </div>
 
-      <!-- Nút Lưu Bài Viết -->
       <div class="pt-2">
         <button type="submit" class="btn-3d btn-primary w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 cursor-pointer border-none">
           <span>✨</span>
           <span>Analyze & Save Article</span>
         </button>
       </div>
-
     </form>
   </main>
 
-  <!-- ================= POP-UP XỬ LÝ (LOADING MODAL) ================= -->
+  <!-- POP-UP LOADING -->
   <div id="loadingModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border-4 border-pink-200">
       <div class="text-6xl mb-4 animate-bounce-cute inline-block">📖✨</div>
-      <h3 class="font-bubble text-2xl text-pink-500 font-bold mb-2">Processing Article...</h3>
-      <p class="text-sm text-gray-500 font-bold">Evaluating vocabulary and setting up your reading material...</p>
+      <h3 class="font-bubble text-2xl text-pink-500 font-bold mb-2">Analyzing & Saving...</h3>
+      <p class="text-sm text-gray-500 font-bold">Processing CEFR levels (A1-C2) & syncing data...</p>
     </div>
   </div>
 
-  <!-- ================= POP-UP CHÚC MỪNG & KẾT QUẢ (SUCCESS MODAL) ================= -->
-  <div id="successModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border-4 border-green-200 relative">
+  <!-- POP-UP KẾT QUẢ PHÂN TÍCH % -->
+  <div id="successModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl border-4 border-green-200 my-auto relative">
       
       <div class="text-5xl mb-2">🎉</div>
       <h3 class="font-bubble text-3xl text-green-500 font-extrabold mb-1">Awesome! Article Added!</h3>
-      <p class="text-xs text-gray-400 font-bold mb-4">Your article is successfully stored in your library.</p>
+      <p id="saveModeTag" class="text-xs font-black text-purple-600 bg-purple-100 inline-block px-3 py-1 rounded-full mb-4">Saved as Public Article</p>
 
-      <!-- Kết quả Phân Loại Level -->
-      <div class="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-pink-200 rounded-2xl p-4 mb-4">
-        <span class="text-xs font-black text-pink-400 uppercase tracking-widest block mb-1">Estimated Vocabulary Level</span>
-        <div id="levelBadge" class="inline-block px-4 py-1.5 rounded-full font-bubble text-2xl font-black text-white bg-pink-400 shadow-sm">
-          Level: B1
+      <!-- Nhãn Trình Độ Tổng Quan -->
+      <div class="bg-pink-50 border-2 border-pink-200 rounded-2xl p-3 mb-4 flex items-center justify-between px-6">
+        <span class="text-xs font-black text-pink-500 uppercase tracking-wider">Overall Level</span>
+        <span id="overallLevelBadge" class="font-bubble text-xl font-black text-pink-600">B1 (Intermediate)</span>
+      </div>
+
+      <!-- Bảng Phân Tích % Chi Tiết -->
+      <div class="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 mb-4 text-left space-y-2.5">
+        <h4 class="font-bold text-xs text-gray-500 uppercase tracking-wider mb-2">📊 Vocabulary Breakdown (CEFR)</h4>
+        
+        <div>
+          <div class="flex justify-between text-xs font-extrabold mb-1">
+            <span class="text-emerald-600">🟢 A1 (Beginner)</span>
+            <span id="pctA1" class="text-gray-600">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="barA1" class="bg-emerald-400 h-2 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs font-extrabold mb-1">
+            <span class="text-teal-600">🔵 A2 (Elementary)</span>
+            <span id="pctA2" class="text-gray-600">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="barA2" class="bg-teal-400 h-2 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs font-extrabold mb-1">
+            <span class="text-amber-600">🟡 B1 (Intermediate)</span>
+            <span id="pctB1" class="text-gray-600">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="barB1" class="bg-amber-400 h-2 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs font-extrabold mb-1">
+            <span class="text-orange-600">🟠 B2 (Upper-Intermediate)</span>
+            <span id="pctB2" class="text-gray-600">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="barB2" class="bg-orange-400 h-2 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs font-extrabold mb-1">
+            <span class="text-rose-600">🔴 C1/C2 (Advanced)</span>
+            <span id="pctC1" class="text-gray-600">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="barC1" class="bg-rose-400 h-2 rounded-full" style="width: 0%"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Dòng Lưu Ý Nhỏ về Hệ Thống -->
-      <p class="text-xs italic text-gray-400 mb-6 bg-gray-50 p-3 rounded-xl text-left border border-gray-100">
-        💡 <strong class="not-italic text-gray-500">Note:</strong> This level classification is calculated automatically by the system for reference only to help you organize your reading easily.
-      </p>
-
-      <!-- 2 Nút Bấm Chuyển Hướng -->
+      <!-- Nút Chuyển Hướng -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <a href="mylibrary.html" class="btn-3d bg-emerald-400 text-white py-3 px-4 rounded-xl font-extrabold text-sm no-underline inline-block" style="--shadow-color: #2BB673;">
-          📚 Go to My Library
+          📚 Go to Library
         </a>
         <button onclick="resetForm()" class="btn-3d bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-extrabold text-sm border-none cursor-pointer" style="--shadow-color: #CBD5E1;">
           ➕ Add Another
@@ -176,74 +238,130 @@
     </div>
   </div>
 
-  <!-- JS CHÍNH XỬ LÝ LOGIC -->
+  <!-- FIREBASE CONFIG & ANALYTICS SCRIPT -->
   <script>
-    // Hàm Thuật Toán Giả Định Phân Loại Level Dựa Trên Độ Dài Từ Vựng Trong Bài
-    function analyzeLevel(text) {
+    // Cấu hình Firebase của bạn
+    const firebaseConfig = {
+      apiKey: "AIzaSyALqBf4DWC0NLXgxvGVWq8_qgr8SWWS7pY",
+      authDomain: "readingland-bccc1.firebaseapp.com",
+      projectId: "readingland-bccc1",
+      storageBucket: "readingland-bccc1.firebasestorage.app",
+      messagingSenderId: "941153833738",
+      appId: "1:941153833738:web:0628eb2998541913ae20f3",
+      measurementId: "G-DZZGN7R0PR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const wordBank = {
+      a1: new Set(['the','be','to','of','and','a','in','that','have','i','it','for','not','on','with','he','as','you','do','at','this','but','his','by','from','they','we','say','her','she','or','an','will','my','one','all','would','there','their','what','so','up','out','if','about','who','get','which','go','me','when','make','can','like','time','no','just','him','know','take','people','into','year','your','good','some','could','them','see','other','than','then','now','look','only','come','its','over','think','also','back','after','use','two','how','our','work','first','well','way','even','new','want','because','any','these','give','day','most','us','book','cat','dog','school','family','friend','happy','water','food']),
+      a2: new Set(['ability','able','about','above','accept','according','account','across','act','action','activity','actually','add','address','administration','admit','adult','affect','again','against','age','agency','agent','ago','agree','agreement','ahead','air','allow','almost','alone','along','already','also','although','always','american','among','amount','analysis','animal','another','answer','anyone','anything','appear','apply','approach','area','argue','arm','around','arrive','article','artist','assume','attack','attention','attorney','audience','author','authority','available','avoid','away','baby','beautiful','become','before','begin','behavior','behind','believe','benefit','better','between','beyond','border','born','both','bother','bottle','bottom','break','brief','build','building']),
+      b1: new Set(['absorb','abstract','academic','accent','acceptable','accidentally','accommodate','accompany','accomplish','accountant','accuracy','accurate','accurately','accuse','achieve','achievement','acid','acknowledge','acquire','across','activate','adapt','addiction','addition','additional','adequate','adequately','adjust','adjustment','admire','adopt','advance','advanced','advantage','adventure','advertise','advertisement','advice','advise','advocate','aesthetic','afford','affordable','afterward','aggression','aggressive','agriculture','agricultural','aircraft','alarm','album','alcohol','alcoholic','alert','alien','align','alignment','allege','allocate','allocation','allowance','ally','alongside','alter','alternative','altogether','amateur','ambition','ambitious','ambulance','amend','amendment','amount','analyze','ancestor','anchor','ancient','angel','angle','angry','anniversary','announce','announcement','annoy','annoyed','annoying','annual','annually','anticipate','anxiety','anxious','apologize','apology','apparent','apparently','appeal','appearance','applicant','application','appoint','appointment','appreciate','appreciation','approach','appropriate','approval','approve','approximately']),
+      b2: new Set(['abandon','abnormal','abolish','abolition','abortion','abrupt','abruptly','absence','absent','absolute','absolutely','absorb','abstract','absurd','abundance','abundant','abuse','academic','accelerate','accent','acceptable','acceptance','access','accessible','accessory','accident','accidental','accommodate','accommodation','accompaniment','accomplish','accomplishment','accordance','accordingly','accountability','accountable','accumulate','accumulation','accuracy','accusation','accuse','accused','accustom','achievable','acidic','acknowledge','acknowledgment','acquaintance','acquire','acquisition','acre','acrobat','across','activate','activation','activist','actress','actual','actuality','acupuncture','acute','adaptability','adaptation','addict','addicted','addition','additionally','additive','address','adequacy','adhere','adherence','adjacent','adjoin','adjourn','adjust','adjustment','administer','administrative','administrator','admirable','admiration','admire','admission','admit','admittedly','adolescence','adolescent','adopt','adoption','adoration','adore','adorn','adrenalin','adrift','adult','adulthood','advance','advancement','advantageous','adventurous','adversary','adverse','adversity','advert','advertise','advertiser','advertising','advisable','advocacy','advocate','aesthetic','affable','affair','affect','affection','affectionate','affidavit','affiliate','affiliation','affinity','affirm','affirmation','affirmative','afflict','affluence','affluent','affordability','affordable','afforestation','affront','afloat','aforementioned','afraid','aftermath','afterward','against','ageless','agenda','agent','aggravate','aggravation','aggregate','aggression','aggressive','aggressor','aggrieved','agile','agility','aging','agitate','agitation','agony','agreeable','agreeably','agreement','agricultural','agriculture','agronomy','ahead','aid','ailment','aimless','airborne','aircraft','airfield','airless','airline','airliner','airlock','airmail','airplane','airport','airship','airstream','airstip','airtight','airwave','airway','airworthiness','airworthy','airy','aisle','ajar','alarmist','albumen','alchemy','alchemist','alcoholism','alcove','alderman','alertness','alias','alibi','alienate','alienation','alignment','alike','alimentary','alimony','alive','alkali','alkaline','allay','allegation','allege','allegedly','allegiance','allegorical','allegory','allergic','allergy','alleviate','alleviation','alley','alliance','alligator','alliteration','allocate','allocation','allot','allotment','allowable','allowance','alloy','allude','allure','alluring','allusion','ally','almanac','almighty','almond','almost','alms','aloft','alone','aloof','aloofness','aloud','alphabetical','alphabetically','alpine','already','alteration','altercate','altercation','alternate','alternately','alternation','alternative','altitude','altruism','altruistic','aluminum','alumna','alumnus','amalgamate','amalgamation','amass','amateurish','amaze','amazement','amazing','amazingly','ambassador','ambassadorial','amber','ambience','ambient','ambiguity','ambiguous','ambition','ambitious','ambivalence','ambivalent','amble','ambulance','ambush','ameliorate','amelioration','amenable','amend','amendment','amenity','americium','amiable','amiably','amicable','amicably','amid','amidships','amiss','ammonia','ammunition','amnesia','amnesiac','amnesty','amoeba','amok','amongst','amorphous','amortize','amortization','amount','amperage','ampere','ampersand','amphibian','amphibious','amphitheater','ample','amplification','amplifier','amplify','amplitude','sustainability','biodiversity','algorithm','infrastructure'])
+    };
+
+    function analyzeCEFRPercentages(text) {
       const words = text.toLowerCase().match(/\b[a-z]+\b/g) || [];
-      if (words.length === 0) return 'A1';
+      if (words.length === 0) return { A1: 100, A2: 0, B1: 0, B2: 0, C1: 0, overall: 'A1 (Beginner)' };
 
-      let totalCharLength = 0;
-      let longWordsCount = 0;
+      let counts = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0 };
+      let total = words.length;
 
-      words.forEach(w => {
-        totalCharLength += w.length;
-        if (w.length >= 7) longWordsCount++;
+      words.forEach(word => {
+        if (wordBank.a1.has(word)) counts.A1++;
+        else if (wordBank.a2.has(word)) counts.A2++;
+        else if (wordBank.b1.has(word)) counts.B1++;
+        else if (wordBank.b2.has(word)) counts.B2++;
+        else if (word.length >= 7) counts.C1++;
+        else counts.A1++;
       });
 
-      const avgLength = totalCharLength / words.length;
-      const longWordRatio = longWordsCount / words.length;
+      const pct = {
+        A1: Math.round((counts.A1 / total) * 100),
+        A2: Math.round((counts.A2 / total) * 100),
+        B1: Math.round((counts.B1 / total) * 100),
+        B2: Math.round((counts.B2 / total) * 100),
+        C1: Math.round((counts.C1 / total) * 100)
+      };
 
-      if (avgLength > 5.8 || longWordRatio > 0.22) return 'C1 - C2 (Advanced)';
-      if (avgLength > 5.0 || longWordRatio > 0.15) return 'B2 (Upper-Intermediate)';
-      if (avgLength > 4.4 || longWordRatio > 0.09) return 'B1 (Intermediate)';
-      if (avgLength > 3.8) return 'A2 (Elementary)';
-      return 'A1 (Beginner)';
+      let overall = 'A1 (Beginner)';
+      if (pct.C1 >= 12 || pct.B2 >= 20) overall = 'C1/C2 (Advanced)';
+      else if (pct.B2 >= 10 || pct.B1 >= 25) overall = 'B2 (Upper-Intermediate)';
+      else if (pct.B1 >= 12 || pct.A2 >= 30) overall = 'B1 (Intermediate)';
+      else if (pct.A2 >= 15) overall = 'A2 (Elementary)';
+
+      return { ...pct, overall };
     }
 
-    // Xử lý khi Submit Form
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
       event.preventDefault();
 
+      const visibility = document.querySelector('input[name="visibility"]:checked').value;
       const title = document.getElementById('articleTitle').value.trim();
       const author = document.getElementById('articleAuthor').value.trim() || 'Unknown Author';
       const source = document.getElementById('articleSource').value.trim() || 'Personal Source';
       const date = document.getElementById('articleDate').value || new Date().toISOString().split('T')[0];
       const content = document.getElementById('articleContent').value.trim();
 
-      // Hiện Pop-up Loading
       document.getElementById('loadingModal').classList.remove('hidden');
 
-      setTimeout(() => {
-        // Tính toán Trình độ
-        const level = analyzeLevel(content);
+      const result = analyzeCEFRPercentages(content);
 
-        // Tạo đối tượng Bài Đọc
-        const newArticle = {
-          id: Date.now(),
-          title: title,
-          author: author,
-          source: source,
-          date: date,
-          content: content,
-          level: level,
-          savedAt: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-        };
+      const newArticle = {
+        title: title,
+        author: author,
+        source: source,
+        date: date,
+        content: content,
+        level: result.overall,
+        breakdown: result,
+        visibility: visibility,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-        // Lưu vào LocalStorage của Trình Duyệt
-        let existingArticles = JSON.parse(localStorage.getItem('readingland_articles')) || [];
-        existingArticles.unshift(newArticle);
-        localStorage.setItem('readingland_articles', JSON.stringify(existingArticles));
+      try {
+        if (visibility === 'public') {
+          // Lưu lên Cloud Firebase
+          await db.collection('public_articles').add(newArticle);
+          document.getElementById('saveModeTag').innerText = "🌐 Published to Public Library";
+          document.getElementById('saveModeTag').className = "text-xs font-black text-purple-600 bg-purple-100 inline-block px-3 py-1 rounded-full mb-4";
+        } else {
+          // Lưu riêng tư LocalStorage
+          let privateArticles = JSON.parse(localStorage.getItem('readingland_private_articles')) || [];
+          privateArticles.unshift({ ...newArticle, id: Date.now() });
+          localStorage.setItem('readingland_private_articles', JSON.stringify(privateArticles));
+          document.getElementById('saveModeTag').innerText = "🔒 Saved to Private Library";
+          document.getElementById('saveModeTag').className = "text-xs font-black text-gray-600 bg-gray-100 inline-block px-3 py-1 rounded-full mb-4";
+        }
 
-        // Ẩn Loading, Hiện Modal Chúc Mừng
+        // Cập nhật Pop-up
         document.getElementById('loadingModal').classList.add('hidden');
-        document.getElementById('levelBadge').innerText = `Level: ${level}`;
+        document.getElementById('overallLevelBadge').innerText = result.overall;
+
+        document.getElementById('pctA1').innerText = result.A1 + '%';
+        document.getElementById('barA1').style.width = result.A1 + '%';
+
+        document.getElementById('pctA2').innerText = result.A2 + '%';
+        document.getElementById('barA2').style.width = result.A2 + '%';
+
+        document.getElementById('pctB1').innerText = result.B1 + '%';
+        document.getElementById('barB1').style.width = result.B1 + '%';
+
+        document.getElementById('pctB2').innerText = result.B2 + '%';
+        document.getElementById('barB2').style.width = result.B2 + '%';
+
+        document.getElementById('pctC1').innerText = result.C1 + '%';
+        document.getElementById('barC1').style.width = result.C1 + '%';
+
         document.getElementById('successModal').classList.remove('hidden');
 
-      }, 1500); // Giả lập chờ 1.5s tạo hiệu ứng xử lý đẹp mắt
+      } catch (error) {
+        alert("An error occurred while saving: " + error.message);
+        document.getElementById('loadingModal').classList.add('hidden');
+      }
     }
 
-    // Hàm Reset Form để nhập bài mới
     function resetForm() {
       document.getElementById('articleForm').reset();
       document.getElementById('successModal').classList.add('hidden');
